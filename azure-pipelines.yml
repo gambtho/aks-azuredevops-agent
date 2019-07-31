@@ -45,21 +45,21 @@ stages:
           command: 'validate'
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
         displayName: Terraform validate
-      # - task: PublishPipelineArtifact@1
-      #   inputs:
-      #     path: $(System.DefaultWorkingDirectory)/terraform
-      #     artifactName: init
+      - task: PublishPipelineArtifact@1
+        inputs:
+          path: $(System.DefaultWorkingDirectory)/terraform/.terraform
+          artifactName: init
     - job: plan
       dependsOn: init
       pool:
         vmImage: 'ubuntu-16.04'
       steps:
-      # - task: DownloadPipelineArtifact@2
-      #   inputs:
-      #     artifact: init
-      #     path: $(System.DefaultWorkingDirectory)
-      # - bash: chmod +x terraform/.terraform/plugins/linux_amd64/*.*
-      #   displayName: plugin permissions
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          artifact: init
+          path: $(System.DefaultWorkingDirectory)/terraform/.terraform
+      - bash: chmod +x terraform/.terraform/plugins/linux_amd64/*.*
+        displayName: plugin permissions
       - task: TerraformCLI@0
         inputs:
           command: 'plan'
@@ -67,10 +67,10 @@ stages:
           environmentServiceName: '$(azure_sub)'
           commandOptions: '-out=$(env).plan'
         displayName: Terraform plan
-      # - task: PublishPipelineArtifact@1
-      #   inputs:
-      #     path: $(System.DefaultWorkingDirectory)/terraform
-      #     artifactName: plan
+      - task: PublishPipelineArtifact@1
+        inputs:
+          path: $(System.DefaultWorkingDirectory)/terraform/$(env).plan
+          artifactName: plan
     - job: Deploy
       dependsOn: plan
       pool:
@@ -81,12 +81,16 @@ stages:
           secureFile: helm-certs.zip
       - bash: cp $(Agent.TempDirectory)/helm-certs.zip .
         displayName: place helm certs 
-      # - task: DownloadPipelineArtifact@2
-      #   inputs:
-      #     artifact: plan
-      #     path: $(System.DefaultWorkingDirectory)
-      # - bash: chmod +x .terraform/plugins/linux_amd64/*.*
-      #   displayName: plugin permissions
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          artifact: plan
+          path: $(System.DefaultWorkingDirectory)
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          artifact: init
+          path: $(System.DefaultWorkingDirectory)/terraform/.terraform
+      - bash: chmod +x terraform/.terraform/plugins/linux_amd64/*.*
+        displayName: plugin permissions
       - task: TerraformCLI@0
         inputs:
           command: 'apply'

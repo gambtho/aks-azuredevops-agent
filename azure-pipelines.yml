@@ -22,11 +22,6 @@ stages:
       # - task: TerraformInstaller@0
       #   inputs:
       #     terraformVersion: '$(terraform_version)'
-      - task: TerraformCLI@0
-        inputs:
-          command: 'validate'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
-        displayName: Terraform validate
       - task: AzureCLI@1
         displayName: Setup
         inputs:
@@ -45,6 +40,11 @@ stages:
           backendAzureRmContainerName: '$(env)'
           backendAzureRmKey: '$(env).tfstate'
         displayName: Terraform init
+      - task: TerraformCLI@0
+        inputs:
+          command: 'validate'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+        displayName: Terraform validate
       # - task: PublishPipelineArtifact@1
       #   inputs:
       #     path: $(System.DefaultWorkingDirectory)/terraform

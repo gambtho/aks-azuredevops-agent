@@ -1,7 +1,38 @@
 # Setup
 
-- Create Azure DevOps project, and clone or fork this into it
-- 
+1. Create Azure DevOps (ADO) project (ensure the preview feature multi-stage pipelines is turned on), and clone or fork this repo into it
+2. Add the Terraform task from Microsoft DevLabs to your ADO organization https://marketplace.visualstudio.com/items?itemName=ms-devlabs.custom-terraform-tasks
+2. Create an Azure Resource Manager **Service connection** in Azure DevOps
+3. In pipeline/library a variable group named devops_agent, with the following variables
+```
+location = eastus2 # where your resources will be created
+name = unique_name # prefix for resources
+env = env_identifier # suffix for resources
+azure_sub = service_connection_name # name from step 2
+terraform_version = 0.12.5 # version of terraform you wish to use
+```
+4. Create another variable group devops_kv, and add a placeholder variable to allow you to save it for now
+
+5. Follow these instructions to setup certificates that will be used by helm, and upload them as a library/secure file named helm-certs.zip (make sure to authorize this for use in pipelines)
+
+
+6. Create a new pipeline using the azure-pipelines.yml file -- allow it to run once (it will fail at the init step), and then follow the steps below
+
+5. Get the Client ID, Server App ID, and Server App Secret for Kubernetes to use while integrating with Azure Active Directory. Use the instructions in [Integrate Azure Active Directory with Azure Kubernetes Service using the Azure CLI](https://docs.microsoft.com/en-us/azure/aks/azure-ad-integration-cli)
+
+5. Create ARM variables that terraform and AKS will use for Azure Resource manager following these [instructions](https://www.terraform.io/docs/providers/azurerm/auth/service_principal_client_secret.html)
+
+8. Add the variables created in step 4 and 5 into keyvault
+
+    ```bash
+    ARM_CLIENT_ID="From Step 7"
+    ARM_CLIENT_SECRET="From Step 7"
+    client_app_id="From Step 6"
+    server_app_id="From Step 6"
+    server_app_secret="From Step 6"
+    location=""
+    ```
+
 
 
 

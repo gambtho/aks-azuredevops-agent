@@ -49,6 +49,10 @@ stages:
         inputs:
           path: $(System.DefaultWorkingDirectory)/terraform/.terraform
           artifactName: init
+      - task: PublishPipelineArtifact@1
+        inputs:
+          path: $(System.DefaultWorkingDirectory)/terraform/terraform.tfvars
+          artifactName: vars
     - job: plan
       dependsOn: init
       pool:
@@ -58,6 +62,10 @@ stages:
         inputs:
           artifact: init
           path: $(System.DefaultWorkingDirectory)/terraform/.terraform
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          artifact: vars
+          path: $(System.DefaultWorkingDirectory)/terraform/
       - bash: chmod +x terraform/.terraform/plugins/linux_amd64/*.*
         displayName: plugin permissions
       - task: TerraformCLI@0

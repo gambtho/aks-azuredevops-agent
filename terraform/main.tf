@@ -12,7 +12,7 @@ data "azurerm_resource_group" "main" {
 
 module "kubernetes" {
   source                          = "./modules/kubernetes-cluster"
-  name             = "${data.azurerm_resource_group.main.name}"
+  name                            = "${data.azurerm_resource_group.main.name}"
   agents_size                     = "${var.agents_size}"
   agents_count                    = "${var.agents_count}"
   kubernetes_version              = "${var.kubernetes_version}"
@@ -24,8 +24,8 @@ module "kubernetes" {
 }
 
 module "acr" {
-  source            = "./modules/acr"
-  name              = "${data.azurerm_resource_group.main.name}"
+  source = "./modules/acr"
+  name   = "${data.azurerm_resource_group.main.name}"
 }
 
 terraform {

@@ -18,7 +18,7 @@ variable "tenant" {
 }
 
 variable "subscription" {
-    description = "azure subscription id"
+  description = "azure subscription id"
 }
 
 
@@ -37,12 +37,12 @@ variable "agents_size" {
 }
 
 variable "client_app_id" {
-    description = "app id used for AKS clients"
+  description = "app id used for AKS clients"
 }
 variable "server_app_id" {
-    description = "app id used by AKS for AAD integration"
+  description = "app id used by AKS for AAD integration"
 }
 
 variable "server_app_secret" {
-      description = "app secret used by AKS for AAD integration"
+  description = "app secret used by AKS for AAD integration"
 }

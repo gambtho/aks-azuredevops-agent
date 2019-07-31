@@ -45,6 +45,11 @@ stages:
           command: 'validate'
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
         displayName: Terraform validate
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: |
+            sleep 30
       - task: PublishPipelineArtifact@1
         inputs:
           path: $(System.DefaultWorkingDirectory)/terraform/.terraform

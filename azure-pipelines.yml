@@ -19,9 +19,9 @@ stages:
       pool:
         vmImage: 'ubuntu-16.04' 
       steps:
-      - task: TerraformInstaller@0
-        inputs:
-          terraformVersion: '$(terraform_version)'
+      # - task: TerraformInstaller@0
+      #   inputs:
+      #     terraformVersion: '$(terraform_version)'
       - task: TerraformCLI@0
         inputs:
           command: 'validate'

@@ -66,7 +66,7 @@ stages:
         inputs:
           artifact: vars
           path: $(System.DefaultWorkingDirectory)/terraform/
-      - bash: chmod +x terraform/.terraform/plugins/linux_amd64/*.*
+      - bash: chmod +x terraform/.terraform/plugins/linux_amd64/*.* && ls -l terraform/ && cat terraform/terraform.tfvars
         displayName: plugin permissions
       - task: TerraformCLI@0
         inputs:

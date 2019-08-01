@@ -21,7 +21,6 @@ variable "subscription" {
   description = "azure subscription id"
 }
 
-
 # aks 
 variable "agents_count" {
   description = "The number of Agents that should exist in the Agent Pool"

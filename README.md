@@ -36,13 +36,19 @@ export password=<paste the password value>
     az keyvault secret set --vault-name $name$env --name client-app-id --value $clientApplicationId # from step 5
 
     ```
-7. Add [Terraform tasks](https://marketplace.visualstudio.com/items?itemName=ms-devlabs.custom-terraform-tasks) from Microsoft DevLabs to your ADO organization 
+7. Add [Terraform tasks](https://marketplace.visualstudio.com/items?itemName=charleszipp.azure-pipelines-tasks-terraform)  to your ADO organization 
 
 8. Create another variable group devops_kv, and associate this with the keyvault you created earlier.  Add all available variables, and authorize it for use in pipelines.
 
-9. Follow these instructions to setup certificates that will be used by helm, and upload them as a library/secure file named helm-certs.zip (make sure to authorize this for use in pipelines)
+9. Follow these [instructions](https://helm.sh/docs/tiller_ssl/) to setup certificates that will be used by helm, and upload them as a library/secure file named helm-certs.zip (make sure to authorize this for use in pipelines)
 
 10. Create a new pipeline using the azure-pipelines.yml file, and run it
+
+## Possible additions
+
+Use [Terraform tasks](https://marketplace.visualstudio.com/items?itemName=ms-devlabs.custom-terraform-tasks) from Microsoft DevLabs
+Convert to helm 3, and remove tiller
+Simplify service principal setup
 
 ## Contributions
 

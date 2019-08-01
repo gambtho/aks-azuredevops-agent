@@ -59,6 +59,9 @@ fi
 RESOURCE_GROUP_NAME=${NAME}${ENVIRONMENT}
 STORAGE_ACCOUNT_NAME=${NAME}${ENVIRONMENT}
 
+ARM_SUBSCRIPTION_ID=$(az account show --query id --out tsv)
+ARM_TENANT_ID=$(az account show --query tenantId --out tsv)
+
 set +e # errors don't matter for a bit
 
 # Create resource group
@@ -66,36 +69,35 @@ if [ $(az group exists -n $RESOURCE_GROUP_NAME -o tsv) = false ]
 then
     az group create --name $RESOURCE_GROUP_NAME --location $LOCATION
 else
-    echo "Resource Group $RESOURCE_GROUP_NAME already exists"
+    echo "Using resource group $RESOURCE_GROUP_NAME"
 fi
+
+set -e # errors matter again
 
 # Create storage account
 az storage account show -n $STORAGE_ACCOUNT_NAME -g $RESOURCE_GROUP_NAME > /dev/null
 if [ $? -eq 0 ]
 then
-    echo "Storage account $STORAGE_ACCOUNT_NAME in resource group $RESOURCE_GROUP_NAME already exists"
+    echo "Using storage account $STORAGE_ACCOUNT_NAME in resource group $RESOURCE_GROUP_NAME"
 else
     az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_ACCOUNT_NAME --sku Standard_LRS --encryption-services blob
 fi
 
-az keyvault create --name $RESOURCE_GROUP_NAME --resource-group  $RESOURCE_GROUP_NAME --location $LOCATION > /dev/null
+az keyvault show --name $RESOURCE_GROUP_NAME > /dev/null
 if [ $? -eq 0 ]
 then
+    echo "Using keyVault $RESOURCE_GROUP_NAME"
+else
+    az keyvault create --name $RESOURCE_GROUP_NAME --resource-group  $RESOURCE_GROUP_NAME --location $LOCATION > /dev/null
     echo "KeyVault $RESOURCE_GROUP_NAME created -- this must be populated wth the k8s AAD values"
 fi
 
-set -e # errors matter again
 
 # Get storage account key
 ACCESS_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP_NAME --account-name $STORAGE_ACCOUNT_NAME --query [0].value -o tsv)
 
 # Create blob container
 az storage container create --name $ENVIRONMENT --account-name $STORAGE_ACCOUNT_NAME --account-key $ACCESS_KEY
-
-ARM_SUBSCRIPTION_ID=$(az account show --query id --out tsv)
-ARM_TENANT_ID=$(az account show --query tenantId --out tsv)
-
-# az keyvault secret set --vault-name $RESOURCE_GROUP_NAME --name AAD_CLIENT_ID --value "adfafadfasdf" 
 
 cd ../terraform
 

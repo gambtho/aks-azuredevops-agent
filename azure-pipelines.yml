@@ -58,6 +58,9 @@ stages:
       pool:
         vmImage: 'ubuntu-16.04'
       steps:
+      - task: TerraformInstaller@0
+        inputs:
+          terraformVersion: '$(terraform_version)'
       - task: DownloadPipelineArtifact@2
         inputs:
           artifact: init
@@ -84,6 +87,9 @@ stages:
       pool:
         vmImage: 'ubuntu-16.04' 
       steps:
+      - task: TerraformInstaller@0
+        inputs:
+          terraformVersion: '$(terraform_version)'
       - task: DownloadSecureFile@1
         inputs:
           secureFile: helm-certs.zip
@@ -92,12 +98,12 @@ stages:
       - task: DownloadPipelineArtifact@2
         inputs:
           artifact: plan
-          path: $(System.DefaultWorkingDirectory)
+          path: $(System.DefaultWorkingDirectory)/terraform/$(env).plan
       - task: DownloadPipelineArtifact@2
         inputs:
           artifact: init
           path: $(System.DefaultWorkingDirectory)/terraform/.terraform
-      - bash: chmod +x terraform/.terraform/plugins/linux_amd64/*.*
+      - bash: chmod +x terraform/.terraform/plugins/linux_amd64/*.* && ls -l terraform && ls -l terraform/.terraform && cd terraform && terraform apply -auto-approve $(env).plan
         displayName: plugin permissions
       - task: TerraformCLI@0
         inputs:

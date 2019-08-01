@@ -109,7 +109,6 @@ cat <<EOT >> terraform.tfvars
     server_app_secret = "${SERVERSECRET}"
     ARM_CLIENT_ID = "${ARMID}"
     ARM_CLIENT_SECRET = "${ARMSECRET}"
-    location = "${LOCATION}"
     name = "${RESOURCE_GROUP_NAME}"
 EOT
 

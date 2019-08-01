@@ -76,7 +76,7 @@ helm upgrade --tls --install --tiller-namespace=tiller-world nginx stable/nginx-
 kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml
 
 # # Install the cert-manager Helm chart
-helm upgrade --tls --tiller-namespace=tiller-world cert-manager \
+helm upgrade --tls --install --tiller-namespace=tiller-world cert-manager \
     jetstack/cert-manager --namespace cert-manager
   
 kubectl apply -f ../config/cluster-issuer.yaml

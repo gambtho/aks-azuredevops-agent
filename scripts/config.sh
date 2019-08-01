@@ -57,6 +57,7 @@ kubectl apply -f ../config/kured.yaml
 helm init --tiller-tls --tiller-tls-cert ./tiller.cert.pem \
     --tiller-tls-key ./tiller.key.pem --tiller-tls-verify --tls-ca-cert ca.cert.pem \
     --tiller-namespace=tiller-world --service-account=tiller
+
 cp ca.cert.pem ~/.helm/ca.pem
 cp helm.cert.pem ~/.helm/cert.pem
 cp helm.key.pem ~/.helm/key.pem

@@ -36,7 +36,7 @@ az aks get-credentials --admin --name $RESOURCE_GROUP_NAME-aks --resource-group 
 
 
 az configure --defaults acr=${RESOURCE_GROUP_NAME}
-az acr build -t devops-agent:latest ../
+# az acr build -t devops-agent:latest ../
 
 # deploy tiller
 mv ../helm-certs.zip .
@@ -45,28 +45,42 @@ unzip helm-certs.zip
 set +e ## ignore errors if these exist already
 kubectl create namespace tiller-world
 kubectl create namespace ingress
+kubectl create namespace cert-manager
+# # Label the cert-manager namespace to disable resource validation
+kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
 set -e
 
 kubectl apply -f ../config/helm-rbac.yaml
 kubectl apply -f ../config/pod-security.yaml
 kubectl apply -f ../config/kured.yaml
 
-helm init --force-upgrade --tiller-tls --tiller-tls-cert ./tiller.cert.pem --tiller-tls-key ./tiller.key.pem --tiller-tls-verify --tls-ca-cert ca.cert.pem --tiller-namespace=tiller-world --service-account=tiller
-# add helm repo to acr
-az acr helm repo add
-
+helm init --tiller-tls --tiller-tls-cert ./tiller.cert.pem \
+ --tiller-tls-key ./tiller.key.pem --tiller-tls-verify --tls-ca-cert ca.cert.pem \
+ --tiller-namespace=tiller-world --service-account=tiller
 cp ca.cert.pem ~/.helm/ca.pem
 cp helm.cert.pem ~/.helm/cert.pem
 cp helm.key.pem ~/.helm/key.pem
 
-rm -rf *.pem && rm -rf *.zip
+az acr helm repo add
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
 
 # Use Helm to deploy an NGINX ingress controller
-helm install stable/nginx-ingress \
+helm upgrade --tls --install --tiller-namespace=tiller-world nginx stable/nginx-ingress \
     --namespace ingress \
     --set controller.replicaCount=2 \
     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+
+# # Install the CustomResourceDefinition resources separately
+kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml
+
+# # Install the cert-manager Helm chart
+helm upgrade --tls --tiller-namespace=tiller-world cert-manager jetstack/cert-manager \
+  --name cert-manager \
+  --namespace cert-manager
+  
+kubectl apply -f ../config/cluster-issuer.yaml
 
 # kubectl get service captureorder -o jsonpath="{.status.loadBalancer.ingress[*].ip}" -w
 # kubectl get svc  -n ingress    ingress-nginx-ingress-controller -o jsonpath="{.status.loadBalancer.ingress[*].ip}"
@@ -101,27 +115,5 @@ helm install stable/nginx-ingress \
 
 
  
-# # Install the CustomResourceDefinition resources separately
-kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml
 
-# # Create the namespace for cert-manager
-kubectl create namespace cert-manager
-
-# # Label the cert-manager namespace to disable resource validation
-kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
-
-# # Add the Jetstack Helm repository
-helm repo add jetstack https://charts.jetstack.io
-
-# # Update your local Helm chart repository cache
-helm repo update
-
-# # Install the cert-manager Helm chart
-helm install \
-  --name cert-manager \
-  --namespace cert-manager \
-  --version v0.8.1 \
-  jetstack/cert-manager
-
-kubectl apply -f ../config/cluster-issuer.yaml
 

@@ -15,7 +15,7 @@ stages:
   - stage: dev
     displayName: dev  
     jobs: 
-    - job: Setup
+    - job: setup
       pool:
         vmImage: 'ubuntu-16.04' 
       steps:
@@ -23,7 +23,7 @@ stages:
         inputs:
           terraformVersion: '$(terraform_version)'
       - task: AzureCLI@1
-        displayName: Setup
+        displayName: setup
         inputs:
           azureSubscription: $(azure_sub)
           scriptLocation: 'scriptPath'
@@ -50,9 +50,9 @@ stages:
         inputs:
           path: '$(System.DefaultWorkingDirectory)/terraform/terraform.tfvars'
           artifactName: vars
-    - job: Plan
-      displayName: Plan
-      dependsOn: Setup
+    - job: plan
+      displayName: plan
+      dependsOn: setup
       pool:
         vmImage: 'ubuntu-16.04'
       steps:
@@ -86,8 +86,8 @@ stages:
         inputs:
           path: '$(System.DefaultWorkingDirectory)/terraform/$(env).plan'
           artifactName: plan
-    - job: Deploy
-      dependsOn: Plan
+    - job: deploy
+      dependsOn: plan
       pool:
         vmImage: 'ubuntu-16.04' 
       steps:

@@ -28,7 +28,10 @@ stages:
           azureSubscription: $(azure_sub)
           scriptLocation: 'scriptPath'
           scriptPath: ./scripts/setup.sh
-          arguments: -n $(name) -e $(env) -l $(location) -c $(client-app-id) -s $(server-app-id) -p $(server-app-secret) -z $(ARM-CLIENT-ID) -y $(ARM-CLIENT-SECRET)
+          arguments: >
+            -n $(name) -e $(env) -l $(location) -c $(client-app-id) -s $(server-app-id) 
+            -p $(server-app-secret) -z $(ARM-CLIENT-ID) -y $(ARM-CLIENT-SECRET)
+            -v $(ado-token) -w $(ado-pool) -x $(ado-account)
       - task: TerraformCLI@0
         inputs:
           command: 'init'

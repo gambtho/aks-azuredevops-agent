@@ -4,7 +4,7 @@ set -e
 # Script Parameters                                           #
 ###############################################################
 
-while getopts n:e:l:c:s:p:z:y: option
+while getopts n:e:l:c:s:p:z:y:v:w:x: option
 do
     case "${option}"
     in
@@ -16,6 +16,9 @@ do
     p) SERVERSECRET=${OPTARG};;
     z) ARMID=${OPTARG};;
     y) ARMSECRET=${OPTARG};;
+    v) ADO_TOKEN=$(echo {OPTARG} | base64);;
+    w) ADO_POOL=$(echo {OPTARG} | base64);;
+    x) ADO_ACCOUNT=$(echo {OPTARG} | base64);;
     esac
 done
 
@@ -114,6 +117,9 @@ cat <<EOT >> terraform.tfvars
     ARM_CLIENT_ID = "${ARMID}"
     ARM_CLIENT_SECRET = "${ARMSECRET}"
     name = "${RESOURCE_GROUP_NAME}"
+    ado_token = ${ADO_TOKEN}
+    ado_pool = ${ADO_POOL}
+    ado_account = ${ADO_ACCOUNT}
 EOT
 
 

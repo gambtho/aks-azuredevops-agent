@@ -22,10 +22,10 @@ ingress:
   hosts:
     - host: chart-example.local
       paths:
-      - path: /
-        backend:
-          serviceName: vstslinuxbuild
-          servicePort: https
+        - path: /
+          backend:
+            serviceName: vstslinuxbuild
+            servicePort: https
   tls:
     - secretName: tls-secret
       hosts:

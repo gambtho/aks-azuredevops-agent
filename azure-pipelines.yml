@@ -63,14 +63,19 @@ stages:
           terraformVersion: '$(terraform_version)'
       - task: DownloadPipelineArtifact@2
         inputs:
-          artifact: init
-          path: $(System.DefaultWorkingDirectory)/terraform/.terraform
-      - task: DownloadPipelineArtifact@2
-        inputs:
           artifact: vars
           path: $(System.DefaultWorkingDirectory)/terraform/
-      - bash: chmod +x terraform/.terraform/plugins/linux_amd64/*.* && ls -l terraform/ && cat terraform/terraform.tfvars
-        displayName: plugin permissions
+      - task: TerraformCLI@0
+        inputs:
+          command: 'init'
+          backendType: 'azurerm'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+          backendServiceArm: '$(azure_sub)'
+          backendAzureRmResourceGroupName: '$(name)$(env)'
+          backendAzureRmStorageAccountName: '$(name)$(env)'
+          backendAzureRmContainerName: '$(env)'
+          backendAzureRmKey: '$(env).tfstate'
+        displayName: Terraform init
       - task: TerraformCLI@0
         inputs:
           command: 'plan'
@@ -99,12 +104,17 @@ stages:
         inputs:
           artifact: plan
           path: $(System.DefaultWorkingDirectory)/terraform/$(env).plan
-      - task: DownloadPipelineArtifact@2
+      - task: TerraformCLI@0
         inputs:
-          artifact: init
-          path: $(System.DefaultWorkingDirectory)/terraform/.terraform
-      - bash: chmod +x terraform/.terraform/plugins/linux_amd64/*.* && ls -l terraform && ls -l terraform/.terraform && cd terraform && terraform apply -auto-approve $(env).plan
-        displayName: plugin permissions
+          command: 'init'
+          backendType: 'azurerm'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform'
+          backendServiceArm: '$(azure_sub)'
+          backendAzureRmResourceGroupName: '$(name)$(env)'
+          backendAzureRmStorageAccountName: '$(name)$(env)'
+          backendAzureRmContainerName: '$(env)'
+          backendAzureRmKey: '$(env).tfstate'
+        displayName: Terraform init
       - task: TerraformCLI@0
         inputs:
           command: 'apply'

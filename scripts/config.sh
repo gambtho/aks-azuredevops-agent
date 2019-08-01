@@ -84,7 +84,7 @@ sleep 5
 kubectl apply -f ../config/cluster-issuer.yaml
 
 
-cd agent 
+cd ../agent 
 set +e
 ls -l *.tgz
 az acr helm push --force *.tgz

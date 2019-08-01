@@ -96,7 +96,7 @@ cd -
 helm repo update
 
 helm upgrade --tls --install --tiller-namespace=tiller-world \
-    --namespace agent ${RESOURCE_GROUP_NAME}/agent
+    agent ${RESOURCE_GROUP_NAME}/agent
 # -i \
 #  --version $version --values values/$name-values.yaml
 

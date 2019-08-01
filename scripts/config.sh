@@ -106,7 +106,7 @@ TOKEN=$(echo -n "replace-me" | base64)
 ACCOUNT=$(echo -n "replace-me" | base64)
 POOL=$(echo -n "replace-me" | base64)
 
-helm delete --purge --tls --install --tiller-namespace=tiller-world agent
+helm delete --purge --tls --tiller-namespace=tiller-world agent
 
 helm upgrade --tls --install --tiller-namespace=tiller-world \
     agent ${RESOURCE_GROUP_NAME}/agent --set vsts.account=${ACCOUNT},vsts.token=${TOKEN},vsts.pool=${POOL}

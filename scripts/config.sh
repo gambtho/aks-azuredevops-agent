@@ -26,7 +26,7 @@ fi
 # Script Begins                                               #
 ###############################################################
 
-RESOURCE_GROUP_NAME=${CLUSTER_NAME}${ENVIRONMENT}
+RESOURCE_GROUP_NAME=${NAME}${ENVIRONMENT}
 ARM_SUBSCRIPTION_ID=$(az account show --query id --out tsv)
 az account set --subscription $ARM_SUBSCRIPTION_ID
 
@@ -54,13 +54,55 @@ set -e
 
 helm init --force-upgrade --tiller-tls --tiller-tls-cert ./tiller.cert.pem --tiller-tls-key ./tiller.key.pem --tiller-tls-verify --tls-ca-cert ca.cert.pem --tiller-namespace=tiller-world --service-account=tiller
 
-# cp ca.cert.pem ~/.helm/ca.pem
-# cp helm.cert.pem ~/.helm/cert.pem
-# cp helm.key.pem ~/.helm/key.pem
+cp ca.cert.pem ~/.helm/ca.pem
+cp helm.cert.pem ~/.helm/cert.pem
+cp helm.key.pem ~/.helm/key.pem
 
-# rm -rf *.pem && rm -rf *.zip
+rm -rf *.pem && rm -rf *.zip
+
+# Create a namespace for your ingress resources
+kubectl create namespace ingress
+
+# Use Helm to deploy an NGINX ingress controller
+helm install stable/nginx-ingress \
+    --namespace ingress \
+    --set controller.replicaCount=2 \
+    --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
+    --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+
+# kubectl get service captureorder -o jsonpath="{.status.loadBalancer.ingress[*].ip}" -w
+# kubectl get svc  -n ingress    ingress-nginx-ingress-controller -o jsonpath="{.status.loadBalancer.ingress[*].ip}"
+
+
+#!/bin/bash
+
+# Public IP address
+# IP="<PUBLIC_IP_OF_THE_K8S_CLUSTER_ON_AKS>"
+
+# # Name to associate with public IP address
+# DNSNAME="<DESIRED_FQDN_PREFIX>" // FQDN will then be DNSNAME.ZONE.cloudapp.azure.com
+
+# # Get resource group and public ip name
+# RESOURCEGROUP=$(az network public-ip list --query "[?ipAddress!=null]|[?contains(ipAddress, '$IP')].[resourceGroup]" --output tsv)
+# PIPNAME=$(az network public-ip list --query "[?ipAddress!=null]|[?contains(ipAddress, '$IP')].[name]" --output tsv)
+
+# # Update public ip address with dns name
+# az network public-ip update --resource-group $RESOURCEGROUP --name  $PIPNAME --dns-name $DNSNAME
+
+# # Public IP address of your ingress controller
+# IP="40.121.63.72"
+
+# # Name to associate with public IP address
+# DNSNAME="demo-aks-ingress"
+
+# # Get the resource-id of the public ip
+# PUBLICIPID=$(az network public-ip list --query "[?ipAddress!=null]|[?contains(ipAddress, '$IP')].[id]" --output tsv)
+
+# # Update public ip address with DNS name
+# az network public-ip update --ids $PUBLICIPID --dns-name $DNSNAME
+
+
  
-
 # # Install the CustomResourceDefinition resources separately
 # kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml
 
@@ -83,26 +125,5 @@ helm init --force-upgrade --tiller-tls --tiller-tls-cert ./tiller.cert.pem --til
 #   --version v0.8.1 \
 #   jetstack/cert-manager
 
-
-
-# publicIp=$(az network public-ip create --resource-group MC_${RESOURCE_GROUP_NAME}-resources_${RESOURCE_GROUP_NAME}-aks_eastus --name ${RESOURCE_GROUP_NAME} --allocation-method static --query publicIp.ipAddress -o tsv)
-# helm install --tls --tiller-namespace=tiller-world stable/nginx-ingress \
-#     --namespace ingress \
-#     --set controller.replicaCount=2 \
-#     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
-#     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux \
-#     --set controller.service.loadBalancerIP=${publicIp}
-
-# kubectl apply -f agents/agent.yaml
-
-# echo $publicIp
-
-# rm -rf *.pem && rm -rf *.zip
-# cp ca.cert.pem ~/.helm/ca.pem
-# cp helm.cert.pem ~/.helm/cert.pem
-# cp helm.key.pem ~/.helm/key.pem
-
-
-## tls and vsts secret
-
+# kubectl apply -f cluster-issuer.yaml
 

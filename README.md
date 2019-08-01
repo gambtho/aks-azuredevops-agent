@@ -1,9 +1,9 @@
 
-# **AKS - Deployment pipeline**
+# Azure DevOps - Self Hosted Agents on AKS
 
-This article explains how to leverage the shell scripts and terraform templates stored in this repo to setup an AKS cluster on an existing Azure Subscription. The process is orchestrated through **Azure DevOps (ADO) pipelines**. The provided shell scripts will create a storage account to keep the terraform remote state. The terraform configuration will create a vnet with an associated subnet, as well as any specified vnet pairings. The AKS cluster created will make use of Azure AD intregrated RBAC. Upon completion of the cluster creation, helm tiller will be installed on the cluster and kured will be setup to provide automated node restarts when updates are needed.
+This repo provides instructions and configuration to setup Self Hosted Agents for Azure DevOps running on an AKS cluster.   It was derived from this [article](https://medium.com/beyondthecorneroffice/host-azure-devops-build-containers-on-aks-beb7239026b2) by Jonathan Gardner @jgardner04, as well as a previous project by Mate Barbas.   This project utilizes terraform and helm to provide support for a repeatable infrastructure as code approach.  The process is orchestrated through **Azure DevOps (ADO) pipelines**. The provided shell scripts will create a storage account to keep the terraform remote state.  The AKS cluster created will make use of Azure AD intregrated RBAC. Upon completion of the cluster creation, helm tiller will be installed on the cluster and kured will be setup to provide automated node restarts when updates are needed.
 
-# Setup
+## Setup
 
 1. Create Azure DevOps (ADO) project (ensure the preview feature multi-stage pipelines is turned on), and clone or fork this repo into it
 2. Create an Azure Resource Manager **Service connection** in Azure DevOps
@@ -46,9 +46,10 @@ export password=<paste the password value>
 
 ## Possible additions
 
-Use [Terraform tasks](https://marketplace.visualstudio.com/items?itemName=ms-devlabs.custom-terraform-tasks) from Microsoft DevLabs
-Convert to helm 3, and remove tiller
-Simplify service principal setup
+- Use [Terraform tasks](https://marketplace.visualstudio.com/items?itemName=ms-devlabs.custom-terraform-tasks) from Microsoft DevLabs
+- Convert to helm 3, and remove tiller
+- Simplify service principal setup
+= Simplify/reorganize pipeline jobs and stages
 
 ## Contributions
 

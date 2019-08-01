@@ -15,7 +15,7 @@ stages:
   - stage: dev
     displayName: dev  
     jobs: 
-    - job: setup
+    - job: Setup
       pool:
         vmImage: 'ubuntu-16.04' 
       steps:
@@ -50,8 +50,8 @@ stages:
         inputs:
           path: '$(System.DefaultWorkingDirectory)/terraform/terraform.tfvars'
           artifactName: vars
-    - job: plan
-      dependsOn: setup
+    - job: Plan
+      dependsOn: Setup
       pool:
         vmImage: 'ubuntu-16.04'
       steps:
@@ -86,7 +86,7 @@ stages:
           path: '$(System.DefaultWorkingDirectory)/terraform/$(env).plan'
           artifactName: plan
     - job: Deploy
-      dependsOn: plan
+      dependsOn: Plan
       pool:
         vmImage: 'ubuntu-16.04' 
       steps:

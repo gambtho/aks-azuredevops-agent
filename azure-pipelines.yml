@@ -51,6 +51,7 @@ stages:
           path: '$(System.DefaultWorkingDirectory)/terraform/terraform.tfvars'
           artifactName: vars
     - job: Plan
+      displayName: Plan
       dependsOn: Setup
       pool:
         vmImage: 'ubuntu-16.04'

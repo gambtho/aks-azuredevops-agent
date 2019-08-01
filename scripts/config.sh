@@ -38,10 +38,6 @@ az aks get-credentials --admin --name $RESOURCE_GROUP_NAME-aks --resource-group 
 az configure --defaults acr=${RESOURCE_GROUP_NAME}
 az acr build -t devops-agent:latest ../
 
-kubectl apply -f ../config/helm-rbac.yaml
-kubectl apply -f ../config/pod-security.yaml
-kubectl apply -f ../config/kured.yaml
-
 # deploy tiller
 mv ../helm-certs.zip .
 unzip helm-certs.zip
@@ -50,6 +46,10 @@ set +e ## ignore errors if these exist already
 kubectl create namespace tiller-world
 kubectl create namespace ingress
 set -e
+
+kubectl apply -f ../config/helm-rbac.yaml
+kubectl apply -f ../config/pod-security.yaml
+kubectl apply -f ../config/kured.yaml
 
 helm init --force-upgrade --tiller-tls --tiller-tls-cert ./tiller.cert.pem --tiller-tls-key ./tiller.key.pem --tiller-tls-verify --tls-ca-cert ca.cert.pem --tiller-namespace=tiller-world --service-account=tiller
 # add helm repo to acr

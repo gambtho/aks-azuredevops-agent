@@ -96,6 +96,12 @@ cd -
 
 helm repo update
 
+
+helm fetch ${RESOURCE_GROUP_NAME}/agent
+
+echo "####################################################"
+az acr helm list
+
 TOKEN=$(echo -n "replace-me" | base64)
 ACCOUNT=$(echo -n "replace-me" | base64)
 POOL=$(echo -n "replace-me" | base64)

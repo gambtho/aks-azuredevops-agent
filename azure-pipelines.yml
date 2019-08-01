@@ -39,6 +39,7 @@ stages:
           backendAzureRmStorageAccountName: '$(name)$(env)'
           backendAzureRmContainerName: '$(env)'
           backendAzureRmKey: '$(env).tfstate'
+          commandOptions: '-upgrade'
         displayName: Terraform init
       - task: TerraformCLI@0
         inputs:
@@ -50,7 +51,7 @@ stages:
           path: '$(System.DefaultWorkingDirectory)/terraform/terraform.tfvars'
           artifactName: vars
     - job: plan
-      dependsOn: init
+      dependsOn: setup
       pool:
         vmImage: 'ubuntu-16.04'
       steps:
@@ -71,6 +72,7 @@ stages:
           backendAzureRmStorageAccountName: '$(name)$(env)'
           backendAzureRmContainerName: '$(env)'
           backendAzureRmKey: '$(env).tfstate'
+          commandOptions: '-upgrade'
         displayName: Terraform init
       - task: TerraformCLI@0
         inputs:
@@ -114,6 +116,7 @@ stages:
           backendAzureRmStorageAccountName: '$(name)$(env)'
           backendAzureRmContainerName: '$(env)'
           backendAzureRmKey: '$(env).tfstate'
+          commandOptions: '-upgrade'
         displayName: Terraform init
       - task: TerraformCLI@0
         inputs:

@@ -79,7 +79,18 @@ kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release
 helm upgrade --tls --install --tiller-namespace=tiller-world cert-manager \
     jetstack/cert-manager --namespace cert-manager
   
+# wait for cert-manager to be available
+sleep 5
 kubectl apply -f ../config/cluster-issuer.yaml
+
+
+cd agent 
+set +e
+ls -l *.tgz
+az acr helm push --force *.tgz
+rm -rf *.tgz
+set -e
+cd - 
 
 # kubectl get service captureorder -o jsonpath="{.status.loadBalancer.ingress[*].ip}" -w
 # kubectl get svc  -n ingress    ingress-nginx-ingress-controller -o jsonpath="{.status.loadBalancer.ingress[*].ip}"

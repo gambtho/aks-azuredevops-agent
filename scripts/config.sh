@@ -33,15 +33,14 @@ az account set --subscription $ARM_SUBSCRIPTION_ID
 # get kubeconfig
 az aks get-credentials --admin --name $RESOURCE_GROUP_NAME-aks --resource-group $RESOURCE_GROUP_NAME
 
-# add helm repo to acr
+
+
 az configure --defaults acr=${RESOURCE_GROUP_NAME}
-az acr helm repo add
+az acr build -t devops-agent:latest ../
 
-az acr build -t devops-agent:latest ./agents
-
-kubectl apply -f ../config/helm-rbac.yml
-kubectl apply -f ../config/pod-security.yml
-kubectl apply -f ../config/kured.yml
+kubectl apply -f ../config/helm-rbac.yaml
+kubectl apply -f ../config/pod-security.yaml
+kubectl apply -f ../config/kured.yaml
 
 # deploy tiller
 mv ../helm-certs.zip .
@@ -53,15 +52,14 @@ kubectl create namespace ingress
 set -e
 
 helm init --force-upgrade --tiller-tls --tiller-tls-cert ./tiller.cert.pem --tiller-tls-key ./tiller.key.pem --tiller-tls-verify --tls-ca-cert ca.cert.pem --tiller-namespace=tiller-world --service-account=tiller
+# add helm repo to acr
+az acr helm repo add
 
 cp ca.cert.pem ~/.helm/ca.pem
 cp helm.cert.pem ~/.helm/cert.pem
 cp helm.key.pem ~/.helm/key.pem
 
 rm -rf *.pem && rm -rf *.zip
-
-# Create a namespace for your ingress resources
-kubectl create namespace ingress
 
 # Use Helm to deploy an NGINX ingress controller
 helm install stable/nginx-ingress \
@@ -104,26 +102,26 @@ helm install stable/nginx-ingress \
 
  
 # # Install the CustomResourceDefinition resources separately
-# kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml
+kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml
 
 # # Create the namespace for cert-manager
-# kubectl create namespace cert-manager
+kubectl create namespace cert-manager
 
 # # Label the cert-manager namespace to disable resource validation
-# kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
+kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
 
 # # Add the Jetstack Helm repository
-# helm repo add jetstack https://charts.jetstack.io
+helm repo add jetstack https://charts.jetstack.io
 
 # # Update your local Helm chart repository cache
-# helm repo update
+helm repo update
 
 # # Install the cert-manager Helm chart
-# helm install \
-#   --name cert-manager \
-#   --namespace cert-manager \
-#   --version v0.8.1 \
-#   jetstack/cert-manager
+helm install \
+  --name cert-manager \
+  --namespace cert-manager \
+  --version v0.8.1 \
+  jetstack/cert-manager
 
-# kubectl apply -f cluster-issuer.yaml
+kubectl apply -f ../config/cluster-issuer.yaml
 

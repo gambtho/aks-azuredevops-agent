@@ -9,9 +9,9 @@ service:
   type: ClusterIP
 
 vsts:
-  account: ""
-  token: ""
-  pool: ""
+  account: "replace-me"
+  token: "replace-me"
+  pool: "replace-me"
 
 ingress:
   enabled: true

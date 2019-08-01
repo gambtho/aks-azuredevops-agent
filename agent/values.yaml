@@ -21,11 +21,12 @@ ingress:
     certmanager.k8s.io/cluster-issuer: letsencrypt
   hosts:
     - host: chart-example.local
-      paths:
-        - path: /
-          backend:
-            serviceName: vstslinuxbuild
-            servicePort: https
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: vstslinuxbuild
+              servicePort: https
   tls:
     - secretName: tls-secret
       hosts:

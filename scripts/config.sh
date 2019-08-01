@@ -55,8 +55,8 @@ kubectl apply -f ../config/pod-security.yaml
 kubectl apply -f ../config/kured.yaml
 
 helm init --tiller-tls --tiller-tls-cert ./tiller.cert.pem \
- --tiller-tls-key ./tiller.key.pem --tiller-tls-verify --tls-ca-cert ca.cert.pem \
- --tiller-namespace=tiller-world --service-account=tiller
+    --tiller-tls-key ./tiller.key.pem --tiller-tls-verify --tls-ca-cert ca.cert.pem \
+    --tiller-namespace=tiller-world --service-account=tiller
 cp ca.cert.pem ~/.helm/ca.pem
 cp helm.cert.pem ~/.helm/cert.pem
 cp helm.key.pem ~/.helm/key.pem
@@ -76,9 +76,8 @@ helm upgrade --tls --install --tiller-namespace=tiller-world nginx stable/nginx-
 kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml
 
 # # Install the cert-manager Helm chart
-helm upgrade --tls --tiller-namespace=tiller-world cert-manager jetstack/cert-manager \
-  --name cert-manager \
-  --namespace cert-manager
+helm upgrade --tls --tiller-namespace=tiller-world cert-manager \
+    jetstack/cert-manager --namespace cert-manager
   
 kubectl apply -f ../config/cluster-issuer.yaml
 

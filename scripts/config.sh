@@ -93,6 +93,13 @@ rm -rf *.tgz
 set -e
 cd - 
 
+helm repo update
+
+helm upgrade --tls --install --tiller-namespace=tiller-world \
+    --namespace agent ${RESOURCE_GROUP_NAME}/agent
+# -i \
+#  --version $version --values values/$name-values.yaml
+
 # kubectl get service captureorder -o jsonpath="{.status.loadBalancer.ingress[*].ip}" -w
 # kubectl get svc  -n ingress    ingress-nginx-ingress-controller -o jsonpath="{.status.loadBalancer.ingress[*].ip}"
 

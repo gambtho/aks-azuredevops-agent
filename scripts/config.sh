@@ -96,8 +96,12 @@ cd -
 
 helm repo update
 
+TOKEN=$(echo -n "replace-me" | base64)
+ACCOUNT=$(echo -n "replace-me" | base64)
+POOL=$(echo -n "replace-me" | base64)
 helm upgrade --tls --install --tiller-namespace=tiller-world \
-    agent ${RESOURCE_GROUP_NAME}/agent
+    agent ${RESOURCE_GROUP_NAME}/agent --set vsts.account=${ACCOUNT},vsts.token=${TOKEN},vsts.pool=${POOL}
+
 # -i \
 #  --version $version --values values/$name-values.yaml
 

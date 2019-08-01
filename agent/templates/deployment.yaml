@@ -24,8 +24,22 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          # env:
-          #   {- toYaml .Values.env | nindent 12 }}
+          env:
+            - name: VSTS_ACCOUNT
+              valueFrom:
+                secretKeyRef:
+                  name: vsts
+                  key: account
+            - name: VSTS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: vsts
+                  key: token
+            - name: VSTS_POOL
+              valueFrom:
+                secretKeyRef:
+                  name: vsts
+                  key: pool   
           ports:
             - name: https
               containerPort: 443

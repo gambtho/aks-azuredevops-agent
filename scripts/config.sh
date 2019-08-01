@@ -86,6 +86,7 @@ kubectl apply -f ../config/cluster-issuer.yaml
 
 cd ../agent 
 set +e
+helm package .
 ls -l *.tgz
 az acr helm push --force *.tgz
 rm -rf *.tgz

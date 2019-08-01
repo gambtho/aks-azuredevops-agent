@@ -15,7 +15,7 @@ stages:
   - stage: dev
     displayName: dev  
     jobs: 
-    - job: init
+    - job: setup
       pool:
         vmImage: 'ubuntu-16.04' 
       steps:
@@ -47,11 +47,7 @@ stages:
         displayName: Terraform validate
       - task: PublishPipelineArtifact@1
         inputs:
-          path: $(System.DefaultWorkingDirectory)/terraform/.terraform
-          artifactName: init
-      - task: PublishPipelineArtifact@1
-        inputs:
-          path: $(System.DefaultWorkingDirectory)/terraform/terraform.tfvars
+          path: '$(System.DefaultWorkingDirectory)/terraform/terraform.tfvars'
           artifactName: vars
     - job: plan
       dependsOn: init
@@ -64,7 +60,7 @@ stages:
       - task: DownloadPipelineArtifact@2
         inputs:
           artifact: vars
-          path: $(System.DefaultWorkingDirectory)/terraform/
+          path: '$(System.DefaultWorkingDirectory)/terraform/'
       - task: TerraformCLI@0
         inputs:
           command: 'init'
@@ -85,7 +81,7 @@ stages:
         displayName: Terraform plan
       - task: PublishPipelineArtifact@1
         inputs:
-          path: $(System.DefaultWorkingDirectory)/terraform/$(env).plan
+          path: '$(System.DefaultWorkingDirectory)/terraform/$(env).plan'
           artifactName: plan
     - job: Deploy
       dependsOn: plan
@@ -103,7 +99,11 @@ stages:
       - task: DownloadPipelineArtifact@2
         inputs:
           artifact: plan
-          path: $(System.DefaultWorkingDirectory)/terraform/$(env).plan
+          path: '$(System.DefaultWorkingDirectory)/terraform/'
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          artifact: vars
+          path: '$(System.DefaultWorkingDirectory)/terraform/'
       - task: TerraformCLI@0
         inputs:
           command: 'init'

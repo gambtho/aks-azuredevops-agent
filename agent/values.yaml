@@ -1,8 +1,8 @@
-replicaCount: 3
+replicaCount: 1
 
 image:
   repository: gambtho/vstslinux
-  tag: 1.0
+  tag: latest
   pullPolicy: Always
 
 service:

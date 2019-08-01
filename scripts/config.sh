@@ -109,7 +109,8 @@ set +e
 helm delete --purge --tls --tiller-namespace=tiller-world agent
 set -e
 helm upgrade --tls --install --tiller-namespace=tiller-world \
-    agent ${RESOURCE_GROUP_NAME}/agent --set vsts.account=${ACCOUNT},vsts.token=${TOKEN},vsts.pool=${POOL}
+    agent ${RESOURCE_GROUP_NAME}/agent --set \
+    vsts.account=${ACCOUNT},vsts.token=${TOKEN},vsts.pool=${POOL},image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/devops-agent
 
 # -i \
 #  --version $version --values values/$name-values.yaml

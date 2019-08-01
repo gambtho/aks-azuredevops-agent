@@ -62,6 +62,10 @@ STORAGE_ACCOUNT_NAME=${NAME}${ENVIRONMENT}
 ARM_SUBSCRIPTION_ID=$(az account show --query id --out tsv)
 ARM_TENANT_ID=$(az account show --query tenantId --out tsv)
 
+echo $ARM_TENANT_ID
+echo $ARM_SUBSCRIPTION_ID
+az account show --query tenantId --out tsv
+
 set +e # errors don't matter for a bit
 
 # Create resource group

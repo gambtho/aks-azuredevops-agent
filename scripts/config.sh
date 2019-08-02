@@ -115,7 +115,7 @@ helm upgrade --tls --install --tiller-namespace=tiller-world \
     azp.url=${ADO_URL},azp.token=${ADO_TOKEN},azp.pool=${ADO_POOL},\
     image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/devops-agent, \
     ingress.hosts[0].host=${RESOURCE_GROUP_NAME}.${LOCATION}.cloudapp.azure.com, \
-    ingress.tls[0].hosts[0]=${RESOURCE_GROUP_NAME}.${LOCATION}.cloudapp.azure.com \
+    ingress.tls[0].hosts[0]=${RESOURCE_GROUP_NAME}.${LOCATION}.cloudapp.azure.com 
 
 IP=$(kubectl get svc nginx-nginx-ingress-controller -n ingress -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 

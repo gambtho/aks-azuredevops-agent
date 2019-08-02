@@ -4,6 +4,14 @@ set -e
 echo $AZP_URL
 echo $AZP_TOKEN
 echo $AZP_AGENT_NAME
+printf %s "$AZP_URL" | xxd
+curl --version
+
+echo "${AZP_URL}/_apis/distributedtask/packages/agent?platform=linux-x64"
+echo '"${AZP_URL}"/_apis/distributedtask/packages/agent?platform=linux-x64'
+echo "$AZP_URL/_apis/distributedtask/packages/agent?platform=linux-x64"
+
+
 
 if [ -z "$AZP_URL" ]; then
   echo 1>&2 "error: missing AZP_URL environment variable"
@@ -56,7 +64,7 @@ print_header "1. Determining matching Azure Pipelines agent..."
 AZP_AGENT_RESPONSE=$(curl -LsS \
   -u user:$(cat "$AZP_TOKEN_FILE") \
   -H 'Accept:application/json;api-version=3.0-preview' \
-  "$AZP_URL/_apis/distributedtask/packages/agent?platform=linux-x64")
+  "${AZP_URL}/_apis/distributedtask/packages/agent?platform=linux-x64")
 
 if echo "$AZP_AGENT_RESPONSE" | jq . >/dev/null 2>&1; then
   AZP_AGENTPACKAGE_URL=$(echo "$AZP_AGENT_RESPONSE" \

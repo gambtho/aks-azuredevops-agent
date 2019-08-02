@@ -20,13 +20,17 @@ spec:
       {{- end }}
       secretName: {{ .secretName }}
   {{- end }}
-{{- end }}
   rules:
-    - host: 
+  {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
       http:
         paths:
-          - path: /
+        {{- range .paths }}
+          - path: {{ . }}
             backend:
-              serviceName: {{ include "agent.fullname" . }}
-              servicePort: https
+              serviceName: {{ $fullName }}
+              servicePort: http
+        {{- end }}
+  {{- end }}
 {{- end }}
+

@@ -1,0 +1,57 @@
+replicaCount: 1
+
+image:
+  repository: gambtho/vstslinux
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+
+azp:
+  url: "replace-me"
+  token: "replace-me"
+  pool: "replace-me"
+
+ingress:
+  enabled: true
+  annotations: 
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    certmanager.k8s.io/cluster-issuer: letsencrypt
+  hosts:
+    - host: chart-example.local
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: vstslinuxbuild
+              servicePort: https
+  tls:
+    - secretName: tls-secret
+      hosts:
+        - chart-example.local
+resources: 
+  limits:
+    cpu: 200m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+env:
+  - name: VSTS_ACCOUNT
+    valueFrom:
+      secretKeyRef:
+        name: vsts
+        key: account
+  - name: VSTS_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: vsts
+        key: token
+  - name: VSTS_POOL
+    valueFrom:
+      secretKeyRef:
+        name: vsts
+        key: pool   

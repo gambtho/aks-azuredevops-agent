@@ -76,7 +76,9 @@ helm repo update
 helm upgrade --tls --install --tiller-namespace=tiller-world nginx stable/nginx-ingress \
     --namespace ingress \
     --set controller.replicaCount=1 \
-    --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux 
+    --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
+    --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+
 
 # # Install the CustomResourceDefinition resources separately
 kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml

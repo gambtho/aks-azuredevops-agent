@@ -42,7 +42,7 @@ az aks get-credentials --admin --name $RESOURCE_GROUP_NAME-aks --resource-group 
 
 
 az configure --defaults acr=${RESOURCE_GROUP_NAME}
-az acr build -t devops-agent:latest ../dockeragent/
+# az acr build -t devops-agent:latest ../dockeragent/
 
 # deploy tiller
 mv ../helm-certs.zip .
@@ -57,7 +57,7 @@ kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
 set -e
 
 kubectl apply -f ../config/helm-rbac.yaml
-kubectl apply -f ../config/pod-security.yaml
+# kubectl apply -f ../config/pod-security.yaml
 kubectl apply -f ../config/kured.yaml
 
 helm init --tiller-tls --tiller-tls-cert ./tiller.cert.pem \

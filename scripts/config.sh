@@ -4,12 +4,15 @@ set -e
 # Script Parameters                                           #
 ###############################################################
 
-while getopts n:e: option
+while getopts n:e:v:w:x: option
 do
     case "${option}"
     in
     n) NAME=${OPTARG};;
     e) ENVIRONMENT=${OPTARG};;
+    v) ADO_TOKEN=$(echo {OPTARG} | base64);;
+    w) ADO_POOL=$(echo {OPTARG} | base64);;
+    x) ADO_ACCOUNT=$(echo {OPTARG} | base64);;
     esac
 done
 
@@ -21,6 +24,7 @@ if [ -z "$ENVIRONMENT" ]; then
     echo "-e is a required argument - Environment (dev, prod)"
     exit 1
 fi
+
 
 ###############################################################
 # Script Begins                                               #
@@ -102,9 +106,9 @@ helm fetch ${RESOURCE_GROUP_NAME}/agent
 echo "####################################################"
 az acr helm list
 
-TOKEN=$(echo -n "replace-me" | base64)
-ACCOUNT=$(echo -n "replace-me" | base64)
-POOL=$(echo -n "replace-me" | base64)
+TOKEN=$(echo -n ${ADO_TOKEN} | base64)
+ACCOUNT=$(echo -n ${ADO_ACCOUNT} | base64)
+POOL=$(echo -n ${ADO_POOL} | base64)
 set +e
 helm delete --purge --tls --tiller-namespace=tiller-world agent
 set -e

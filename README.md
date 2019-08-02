@@ -7,6 +7,7 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
 1. Create Azure DevOps (ADO) project (ensure the preview feature multi-stage pipelines is turned on), and clone or fork this repo into it
 2. Create an Azure Resource Manager **Service connection** in Azure DevOps
 3. In pipeline/library a variable group named devops_agent, with the following variables
+
     ```bash
     location = eastus2 # where your resources will be created
     name = unique_name # prefix for resources
@@ -14,6 +15,7 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
     azure_sub = service_connection_name # name from step 2
     terraform_version = 0.12.5 # version of terraform you wish to use
     ```
+
 4. Create ARM variables that terraform and AKS will use for Azure Resource manager following these [instructions](https://www.terraform.io/docs/providers/azurerm/auth/service_principal_client_secret.html).   Save the values for appId and password. To make things easier you can copy these from the output, and export them into your shell.
 
     ```bash
@@ -65,4 +67,3 @@ This repo is a work in progress, pull requests and suggestions are greatly appre
 ## Maintainers
 
 Thomas Gamble thgamble@microsoft.com
-

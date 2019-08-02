@@ -4,7 +4,7 @@ set -e
 # Script Parameters                                           #
 ###############################################################
 
-while getopts n:e:l:c:s:p:z:y:v:w:x: option
+while getopts n:e:l:c:s:p:z:y: option
 do
     case "${option}"
     in
@@ -16,9 +16,6 @@ do
     p) SERVERSECRET=${OPTARG};;
     z) ARMID=${OPTARG};;
     y) ARMSECRET=${OPTARG};;
-    v) ADO_TOKEN=$(echo {OPTARG} | base64);;
-    w) ADO_POOL=$(echo {OPTARG} | base64);;
-    x) ADO_ACCOUNT=$(echo {OPTARG} | base64);;
     esac
 done
 

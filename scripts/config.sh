@@ -89,6 +89,7 @@ helm upgrade --tls --install --tiller-namespace=tiller-world cert-manager \
 sleep 5
 kubectl apply -f ../config/cluster-issuer.yaml
 
+echo "pushing agent to helm"
 
 cd ../agent 
 set +e
@@ -107,9 +108,10 @@ helm fetch ${RESOURCE_GROUP_NAME}/agent
 echo "####################################################"
 az acr helm list
 
-# set +e
-# helm delete --purge --tls --tiller-namespace=tiller-world agent
-# set -e
+set +e
+helm delete --purge --tls --tiller-namespace=tiller-world agent
+set -e
+echo "deploying agent to k8s"
 helm upgrade --tls --install --tiller-namespace=tiller-world \
     agent ${RESOURCE_GROUP_NAME}/agent --set \
     azp.url=${ADO_URL},azp.token=${ADO_TOKEN},azp.pool=${ADO_POOL},\

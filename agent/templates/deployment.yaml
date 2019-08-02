@@ -25,20 +25,20 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: VSTS_ACCOUNT
+            - name: AZP_URL
               valueFrom:
                 secretKeyRef:
-                  name: vsts
-                  key: account
-            - name: VSTS_TOKEN
+                  name: azp
+                  key: url
+            - name: AZP_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: vsts
+                  name: azp
                   key: token
-            - name: VSTS_POOL
+            - name: AZP_AGENT_NAME
               valueFrom:
                 secretKeyRef:
-                  name: vsts
+                  name: azp
                   key: pool   
           ports:
             - name: https

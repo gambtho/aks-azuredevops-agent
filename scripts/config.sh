@@ -12,7 +12,7 @@ do
     e) ENVIRONMENT=${OPTARG};;
     v) ADO_TOKEN=$(echo ${OPTARG} | base64);;
     w) ADO_POOL=$(echo ${OPTARG} | base64);;
-    x) ADO_ACCOUNT=$(echo ${OPTARG} | base64);;
+    x) ADO_URL=$(echo ${OPTARG} | base64);;
     esac
 done
 
@@ -41,7 +41,7 @@ az aks get-credentials --admin --name $RESOURCE_GROUP_NAME-aks --resource-group 
 
 
 az configure --defaults acr=${RESOURCE_GROUP_NAME}
-# az acr build -t devops-agent:latest ../
+az acr build -t devops-agent:latest ../dockeragent/
 
 # deploy tiller
 mv ../helm-certs.zip .
@@ -106,55 +106,11 @@ helm fetch ${RESOURCE_GROUP_NAME}/agent
 
 echo "####################################################"
 az acr helm list
-echo $ADO_TOKEN | base64 -d
-echo $ADO_ACCOUNT | base64 -d
-echo $ADO_POOL | base64 -d 
 
-TOKEN=${ADO_TOKEN}
-ACCOUNT=${ADO_ACCOUNT}
-POOL=${ADO_POOL}
 set +e
 helm delete --purge --tls --tiller-namespace=tiller-world agent
 set -e
 helm upgrade --tls --install --tiller-namespace=tiller-world \
     agent ${RESOURCE_GROUP_NAME}/agent --set \
-    vsts.account=${ACCOUNT},vsts.token=${TOKEN},vsts.pool=${POOL},image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/devops-agent
-
-# -i \
-#  --version $version --values values/$name-values.yaml
-
-# kubectl get service captureorder -o jsonpath="{.status.loadBalancer.ingress[*].ip}" -w
-# kubectl get svc  -n ingress    ingress-nginx-ingress-controller -o jsonpath="{.status.loadBalancer.ingress[*].ip}"
-
-
-#!/bin/bash
-
-# Public IP address
-# IP="<PUBLIC_IP_OF_THE_K8S_CLUSTER_ON_AKS>"
-
-# # Name to associate with public IP address
-# DNSNAME="<DESIRED_FQDN_PREFIX>" // FQDN will then be DNSNAME.ZONE.cloudapp.azure.com
-
-# # Get resource group and public ip name
-# RESOURCEGROUP=$(az network public-ip list --query "[?ipAddress!=null]|[?contains(ipAddress, '$IP')].[resourceGroup]" --output tsv)
-# PIPNAME=$(az network public-ip list --query "[?ipAddress!=null]|[?contains(ipAddress, '$IP')].[name]" --output tsv)
-
-# # Update public ip address with dns name
-# az network public-ip update --resource-group $RESOURCEGROUP --name  $PIPNAME --dns-name $DNSNAME
-
-# # Public IP address of your ingress controller
-# IP="40.121.63.72"
-
-# # Name to associate with public IP address
-# DNSNAME="demo-aks-ingress"
-
-# # Get the resource-id of the public ip
-# PUBLICIPID=$(az network public-ip list --query "[?ipAddress!=null]|[?contains(ipAddress, '$IP')].[id]" --output tsv)
-
-# # Update public ip address with DNS name
-# az network public-ip update --ids $PUBLICIPID --dns-name $DNSNAME
-
-
- 
-
+    azp.url=${ADO_URL},azp.token=${ADO_TOKEN},azp.pool=${ADO_POOL},image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/devops-agent
 

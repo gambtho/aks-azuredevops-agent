@@ -8,8 +8,8 @@ image:
 service:
   type: ClusterIP
 
-vsts:
-  account: "replace-me"
+azp:
+  url: "replace-me"
   token: "replace-me"
   pool: "replace-me"
 
@@ -31,7 +31,6 @@ ingress:
     - secretName: tls-secret
       hosts:
         - chart-example.local
-
 resources: 
   limits:
     cpu: 200m

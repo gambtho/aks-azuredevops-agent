@@ -1,10 +1,10 @@
 # Azure DevOps - Self Hosted Agents on AKS
 
-This repo provides instructions and configuration to setup Self Hosted Agents for Azure DevOps running on an AKS cluster.   It was derived from this [article](https://medium.com/beyondthecorneroffice/host-azure-devops-build-containers-on-aks-beb7239026b2) by Jonathan Gardner @jgardner04, as well as a previous project by Mate Barbas.   This project utilizes terraform and helm to provide support for a repeatable infrastructure as code approach.  The process is orchestrated through an **Azure DevOps (ADO) pipeline**. The provided shell scripts will create a storage account to keep the terraform remote state.  The AKS cluster created will make use of Azure AD intregrated RBAC. Upon completion of the cluster creation, helm tiller will be installed on the cluster and kured will be setup to provide automated node restarts when updates are needed.
+This repo provides instructions and configuration to setup Self Hosted Agents for Azure DevOps running on an AKS cluster.  It was derived from this [article](https://medium.com/beyondthecorneroffice/host-azure-devops-build-containers-on-aks-beb7239026b2) by Jonathan Gardner @jgardner04, as well as a similar project by Mate Barbas using ARM templates.   This project utilizes terraform and helm to provide support for a repeatable infrastructure as code approach.  The process is orchestrated through an **Azure DevOps (ADO) pipeline**. The provided shell scripts will create a storage account to keep the terraform remote state.  The AKS cluster created will make use of Azure AD intregrated RBAC. Upon completion of the cluster creation, helm tiller will be installed on the cluster and kured will be setup to provide automated node restarts when updates are needed.
 
 ## Setup
 
-1. Create Azure DevOps (ADO) project (ensure the preview feature multi-stage pipelines is turned on), and clone or fork this repo into it
+1. Create an Azure DevOps (ADO) project (ensure the preview feature multi-stage pipelines is turned on), and clone or fork this repo into it
 2. Create an Azure Resource Manager **Service connection** in Azure DevOps
 3. In pipeline/library a variable group named devops_agent, with the following variables
 
@@ -45,9 +45,9 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
     az keyvault secret set --vault-name $name$env --name ado-url --value $ADO_URL # from step 6
     ```
 
-8. Add [Terraform tasks](https://marketplace.visualstudio.com/items?itemName=charleszipp.azure-pipelines-tasks-terraform)  to your ADO organization 
+8. Create another variable group named devops_kv, and associate this with the keyvault you just created.  Add all available variables, and authorize it for use in pipelines
 
-9. Create another variable group devops_kv, and associate this with the keyvault you created earlier.  Add all available variables, and authorize it for use in pipelines.
+9. Add [Terraform tasks](https://marketplace.visualstudio.com/items?itemName=charleszipp.azure-pipelines-tasks-terraform)  to your ADO organization
 
 10. Follow these [instructions](https://helm.sh/docs/tiller_ssl/) to setup certificates that will be used by helm, and upload them as a library/secure file named helm-certs.zip (make sure to authorize this for use in pipelines)
 
@@ -60,9 +60,10 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
 - Simplify service principal setup
 - Simplify/reorganize pipeline jobs and stages
 
-## Considerations
+## Other options
 
-- Could use microsoft/vsts-agent image (appears to be deprecated)
+- Use a docker hub image, and remove the need for ACR
+- Remove the letsencrypt setup, and provide your own certificate
 
 ## Contributions
 

@@ -129,7 +129,7 @@ stages:
           commandOptions: '$(env).plan'
         displayName: Terraform apply
       - task: AzureCLI@1
-        displayName: Kuberentes config
+        displayName: Config
         inputs:
           azureSubscription:  $(azure_sub)
           scriptLocation: 'scriptPath' 

@@ -75,6 +75,7 @@ helm repo update
 helm upgrade --tls --install --tiller-namespace=tiller-world nginx stable/nginx-ingress \
     --namespace ingress \
     --set controller.replicaCount=2 \
+    --set rbac.create=true
     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
 

@@ -14,8 +14,8 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
     location = eastus2 # where your resources will be created
     name = unique_name # prefix for resources
     env = env_identifier # suffix for resources
-    azure_sub = service_connection_name # name from step 2
-    terraform_version = 0.12.5 # version of terraform you wish to use
+    azure_sub = service_connection_name # sevice connection name from step 2
+    terraform_version = 0.12.6 # version of terraform you wish to use
     ```
 
 4. Create ARM variables that terraform and AKS will use for Azure Resource manager following these [instructions](https://www.terraform.io/docs/providers/azurerm/auth/service_principal_client_secret.html).   Save the values for appId and password. To make things easier you can copy these from the output, and export them into your shell.
@@ -29,11 +29,11 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
 
 6. Get the url for your Azure DevOps account, will be something like https://dev.azure.com/<your_org> - $ADO_URL, create a [personal access token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts) - $TOKEN, and create an [agent pool](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/pools-queues?view=vsts) - $POOL
 
-7. Create a resource group and keyvault, then add the variables created in step 4 and 5 into keyvault.  Name and env should be the values you used in step 3 above.
+7. Create a resource group and keyvault, then add the variables created in step 4 and 5 into keyvault.  Name and env should be the values you used in step 3 above.  The following commands can be used in your cli, or in [cloud shell](https://shell.azure.com).
 
     ```bash
     export name=<name from step 3>
-    export env=<name from step 3>
+    export env=<env from step 3>
     export location=<location from step 3>
     az group create --name $name --location $location
     az keyvault create --name $name$env --resource-group $name$env --location $location 
@@ -61,11 +61,14 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
 - Convert to helm 3, and remove tiller
 - Simplify service principal setup
 - Simplify/reorganize pipeline jobs and stages
+- Add 2nd nodepool, with windows agents
+- Add cluster/pod autoscale
 
 ## Other options
 
-- Use a docker hub image, and remove the need for ACR
+- Use a docker hub image, and remove the need for ACR (gambtho/azure-pipeline-agent)
 - Remove the letsencrypt setup, and provide your own certificate
+- Add to dockeragent/Dockerfile any additional tools you may need
 
 ## Contributions
 

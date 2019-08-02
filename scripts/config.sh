@@ -4,7 +4,7 @@ set -e
 # Script Parameters                                           #
 ###############################################################
 
-while getopts n:e:v:w:x:l option
+while getopts n:e:v:w:x:l: option
 do
     case "${option}"
     in
@@ -13,7 +13,7 @@ do
     v) ADO_TOKEN=$(echo ${OPTARG} | base64);;
     w) ADO_POOL=$(echo ${OPTARG} | base64);;
     x) ADO_URL=$(echo ${OPTARG} | base64);;
-    l) LOCATION=$(echo ${OPTARG} | base64);;
+    l) LOCATION=${OPTARG};;
     esac
 done
 

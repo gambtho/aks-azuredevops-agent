@@ -1,10 +1,6 @@
 #!/bin/bash
 set -e
 
-echo $AZP_URL
-echo $AZP_TOKEN
-echo $AZP_AGENT_NAME
-
 if [ -z "$AZP_URL" ]; then
   echo 1>&2 "error: missing AZP_URL environment variable"
   exit 1

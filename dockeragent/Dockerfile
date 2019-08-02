@@ -58,7 +58,6 @@ RUN curl -fsSLO https://releases.hashicorp.com/terraform/$TERRAFORM_VERSION/terr
     && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin \
     && chmod 755 /usr/local/bin/terraform && rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 
-
 WORKDIR /azp
 
 COPY ./start.sh .

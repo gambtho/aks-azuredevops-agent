@@ -10,9 +10,9 @@ do
     in
     n) NAME=${OPTARG};;
     e) ENVIRONMENT=${OPTARG};;
-    v) ADO_TOKEN=$(echo {OPTARG} | base64);;
-    w) ADO_POOL=$(echo {OPTARG} | base64);;
-    x) ADO_ACCOUNT=$(echo {OPTARG} | base64);;
+    v) ADO_TOKEN=$(echo ${OPTARG} | base64);;
+    w) ADO_POOL=$(echo ${OPTARG} | base64);;
+    x) ADO_ACCOUNT=$(echo ${OPTARG} | base64);;
     esac
 done
 
@@ -24,6 +24,10 @@ if [ -z "$ENVIRONMENT" ]; then
     echo "-e is a required argument - Environment (dev, prod)"
     exit 1
 fi
+
+    v) ADO_TOKEN=$(echo {OPTARG} | base64);;
+    w) ADO_POOL=$(echo {OPTARG} | base64);;
+    x) ADO_ACCOUNT=$(echo {OPTARG} | base64);;
 
 
 ###############################################################
@@ -105,6 +109,10 @@ helm fetch ${RESOURCE_GROUP_NAME}/agent
 
 echo "####################################################"
 az acr helm list
+echo $ADO_TOKEN
+echo $ADO_ACCOUNT
+echo $ADO_POOL
+
 
 TOKEN=${ADO_TOKEN}
 ACCOUNT=${ADO_ACCOUNT}

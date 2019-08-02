@@ -76,8 +76,8 @@ helm repo update
 helm upgrade --tls --install --tiller-namespace=tiller-world nginx stable/nginx-ingress \
     --namespace ingress \
     --set controller.replicaCount=1 \
-    --set rbac.create=true
     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux 
+
 # # Install the CustomResourceDefinition resources separately
 kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml
 
@@ -107,9 +107,9 @@ helm fetch ${RESOURCE_GROUP_NAME}/agent
 echo "####################################################"
 az acr helm list
 
-set +e
-helm delete --purge --tls --tiller-namespace=tiller-world agent
-set -e
+# set +e
+# helm delete --purge --tls --tiller-namespace=tiller-world agent
+# set -e
 helm upgrade --tls --install --tiller-namespace=tiller-world \
     agent ${RESOURCE_GROUP_NAME}/agent --set \
     azp.url=${ADO_URL},azp.token=${ADO_TOKEN},azp.pool=${ADO_POOL},\
@@ -118,7 +118,6 @@ helm upgrade --tls --install --tiller-namespace=tiller-world \
     ingress.tls[0].hosts[0]=${RESOURCE_GROUP_NAME}.${LOCATION}.cloudapp.azure.com 
 
 IP=$(kubectl get svc nginx-nginx-ingress-controller -n ingress -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-
 DNSNAME="${RESOURCE_GROUP_NAME}"
 
 # Get the resource-id of the public ip

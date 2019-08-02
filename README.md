@@ -1,5 +1,7 @@
 # Azure DevOps - Self Hosted Agents on AKS
 
+[![Build Status](https://dev.azure.com/thomasgamble2/ado-agent/_apis/build/status/ado-agent?branchName=master)](https://dev.azure.com/thomasgamble2/ado-agent/_build/latest?definitionId=7&branchName=master)
+
 This repo provides instructions and configuration to setup Self Hosted Agents for Azure DevOps running on an AKS cluster.  It was derived from this [article](https://medium.com/beyondthecorneroffice/host-azure-devops-build-containers-on-aks-beb7239026b2) by Jonathan Gardner @jgardner04, as well as a similar project by Mate Barbas using ARM templates.   This project utilizes terraform and helm to provide support for a repeatable infrastructure as code approach.  The process is orchestrated through an **Azure DevOps (ADO) pipeline**. The provided shell scripts will create a storage account to keep the terraform remote state.  The AKS cluster created will make use of Azure AD intregrated RBAC. Upon completion of the cluster creation, helm tiller will be installed on the cluster and kured will be setup to provide automated node restarts when updates are needed.
 
 ## Setup

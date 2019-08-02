@@ -5,6 +5,9 @@ echo $AZP_URL
 echo $AZP_TOKEN
 echo $AZP_AGENT_NAME
 printf %s "$AZP_URL" | xxd
+echo $AZP_URL | tr -cd "[:print:]" 
+tr -dc '[[:print:]]' <<< ${AZP_URL}
+
 curl --version
 
 echo "${AZP_URL}/_apis/distributedtask/packages/agent?platform=linux-x64"

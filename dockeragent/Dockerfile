@@ -13,6 +13,7 @@ RUN apt-get install -qq --no-install-recommends \
     ftp \
     jq \
     git \
+    xxd \
     gnupg \
     iproute2 \
     iputils-ping \

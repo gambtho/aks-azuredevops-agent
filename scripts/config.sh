@@ -10,9 +10,9 @@ do
     in
     n) NAME=${OPTARG};;
     e) ENVIRONMENT=${OPTARG};;
-    v) ADO_TOKEN=${OPTARG};;
-    w) ADO_POOL=${OPTARG};;
-    x) ADO_ACCOUNT=${OPTARG};;
+    v) ADO_TOKEN=$(echo ${OPTARG} | base64);;
+    w) ADO_POOL=$(echo ${OPTARG} | base64);;
+    x) ADO_ACCOUNT=$(echo ${OPTARG} | base64);;
     esac
 done
 
@@ -25,9 +25,7 @@ if [ -z "$ENVIRONMENT" ]; then
     exit 1
 fi
 
-    # v) ADO_TOKEN=$(echo ${OPTARG} | base64);;
-    # w) ADO_POOL=$(echo ${OPTARG} | base64);;
-    # x) ADO_ACCOUNT=$(echo ${OPTARG} | base64);;
+
 
 ###############################################################
 # Script Begins                                               #
@@ -108,10 +106,9 @@ helm fetch ${RESOURCE_GROUP_NAME}/agent
 
 echo "####################################################"
 az acr helm list
-echo $ADO_TOKEN
-echo $ADO_ACCOUNT
-echo $ADO_POOL
-
+echo $ADO_TOKEN | base64 -d
+echo $ADO_ACCOUNT | base64 -d
+echo $ADO_POOL | base64 -d 
 
 TOKEN=${ADO_TOKEN}
 ACCOUNT=${ADO_ACCOUNT}

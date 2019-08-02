@@ -4,7 +4,7 @@ set -e
 # Script Parameters                                           #
 ###############################################################
 
-while getopts n:e:v:w:x: option
+while getopts n:e:v:w:x:l option
 do
     case "${option}"
     in
@@ -13,6 +13,7 @@ do
     v) ADO_TOKEN=$(echo ${OPTARG} | base64);;
     w) ADO_POOL=$(echo ${OPTARG} | base64);;
     x) ADO_URL=$(echo ${OPTARG} | base64);;
+    l) LOCATION=$(echo ${OPTARG} | base64);;
     esac
 done
 
@@ -111,5 +112,17 @@ helm delete --purge --tls --tiller-namespace=tiller-world agent
 set -e
 helm upgrade --tls --install --tiller-namespace=tiller-world \
     agent ${RESOURCE_GROUP_NAME}/agent --set \
-    azp.url=${ADO_URL},azp.token=${ADO_TOKEN},azp.pool=${ADO_POOL},image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/devops-agent
+    azp.url=${ADO_URL},azp.token=${ADO_TOKEN},azp.pool=${ADO_POOL},\
+    image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/devops-agent, \
+    ingress.hosts[0].host=${RESOURCE_GROUP_NAME}.${LOCATION}.cloudapp.azure.com, \
+    ingress.tls[0].hosts[0]=${RESOURCE_GROUP_NAME}.${LOCATION}.cloudapp.azure.com \
 
+IP=$(kubectl get svc nginx-nginx-ingress-controller -n ingress -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+
+DNSNAME="${RESOURCE_GROUP_NAME}"
+
+# Get the resource-id of the public ip
+PUBLICIPID=$(az network public-ip list --query "[?ipAddress!=null]|[?contains(ipAddress, '$IP')].[id]" --output tsv)
+
+# Update public ip address with DNS name
+az network public-ip update --ids $PUBLICIPID --dns-name $DNSNAME

@@ -25,9 +25,6 @@ if [ -z "$ENVIRONMENT" ]; then
     exit 1
 fi
 
-    v) ADO_TOKEN=$(echo {OPTARG} | base64);;
-    w) ADO_POOL=$(echo {OPTARG} | base64);;
-    x) ADO_ACCOUNT=$(echo {OPTARG} | base64);;
 
 
 ###############################################################

@@ -106,9 +106,9 @@ helm fetch ${RESOURCE_GROUP_NAME}/agent
 echo "####################################################"
 az acr helm list
 
-TOKEN=$(echo -n '${ADO_TOKEN}' | base64)
-ACCOUNT=$(echo -n '${ADO_ACCOUNT}' | base64)
-POOL=$(echo -n '${ADO_POOL}' | base64)
+TOKEN=$(echo -n "${ADO_TOKEN}" | base64)
+ACCOUNT=$(echo -n "${ADO_ACCOUNT}" | base64)
+POOL=$(echo -n "${ADO_POOL}" | base64)
 set +e
 helm delete --purge --tls --tiller-namespace=tiller-world agent
 set -e

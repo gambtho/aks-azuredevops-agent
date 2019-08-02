@@ -19,14 +19,11 @@ ingress:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /
     certmanager.k8s.io/cluster-issuer: letsencrypt
-  hosts:
-    - host: devopsagent.acs
-      paths: ['/']
   tls:
     - secretName: tls-secret
       hosts:
         - devopsagent.acs
-        
+
 resources: 
   limits:
     cpu: 200m

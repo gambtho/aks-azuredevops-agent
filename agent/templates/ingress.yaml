@@ -22,15 +22,16 @@ spec:
   {{- end }}
 {{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
-      http:
-        paths:
-        {{- range .paths }}
-          - path: {{ . }}
-            backend:
-              serviceName: {{ $fullName }}
-              servicePort: http
-        {{- end }}
-  {{- end }}
+  - host: {{ .Values.domain }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ include "agent.fullname" . }}
+          servicePort: 80
+      - path: /
+        backend:
+          serviceName: {{ include "agent.fullname" . }}
+          servicePort: 443
+
 {{- end }}

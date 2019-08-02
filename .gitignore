@@ -10,3 +10,4 @@ certs
 # .tfvars files
 *.tfvars
 variables/
+.vscode

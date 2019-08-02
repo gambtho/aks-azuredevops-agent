@@ -1,20 +1,14 @@
 #!/bin/bash
 set -e
 
-echo $AZP_URL
+echo $AZP_URL + "-url"
+echo "${AZP_URL}/_apis/distributedtask/packages/agent?platform=linux-x64"
 echo $AZP_TOKEN
 echo $AZP_AGENT_NAME
-printf %s "$AZP_URL" | xxd
-echo $AZP_URL | tr -cd "[:print:]" 
-tr -dc '[[:print:]]' <<< ${AZP_URL}
 
-curl --version
-
+AZP_URL=tr -dc '[[:print:]]' <<< ${AZP_URL}
+echo $AZP_URL + "-url"
 echo "${AZP_URL}/_apis/distributedtask/packages/agent?platform=linux-x64"
-echo '"${AZP_URL}"/_apis/distributedtask/packages/agent?platform=linux-x64'
-echo "$AZP_URL/_apis/distributedtask/packages/agent?platform=linux-x64"
-
-
 
 if [ -z "$AZP_URL" ]; then
   echo 1>&2 "error: missing AZP_URL environment variable"

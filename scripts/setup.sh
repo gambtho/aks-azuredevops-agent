@@ -114,9 +114,6 @@ cat <<EOT >> terraform.tfvars
     ARM_CLIENT_ID = "${ARMID}"
     ARM_CLIENT_SECRET = "${ARMSECRET}"
     name = "${RESOURCE_GROUP_NAME}"
-    ado_token = ${ADO_TOKEN}
-    ado_pool = ${ADO_POOL}
-    ado_account = ${ADO_ACCOUNT}
 EOT
 
 

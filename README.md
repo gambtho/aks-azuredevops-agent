@@ -8,7 +8,7 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
 
 1. Create an Azure DevOps (ADO) project (ensure the preview feature multi-stage pipelines is turned on), and clone or fork this repo into it
 2. Create an Azure Resource Manager **Service connection** in Azure DevOps
-3. In pipeline/library a variable group named devops_agent, with the following variables
+3. In pipeline/library add a variable group named devops_agent, with the following variables
 
     ```bash
     location = eastus2 # where your resources will be created

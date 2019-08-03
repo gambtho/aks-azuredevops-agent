@@ -64,7 +64,7 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
 - Simplify/reorganize pipeline jobs and stages
 - Add 2nd nodepool, with windows agents
 - Add cluster/pod autoscale
-- Use this (startup script)[https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/docker?view=azure-devops]
+- Use this [startup script](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/docker?view=azure-devops)
 
 ## Other options
 

@@ -42,7 +42,7 @@ az aks get-credentials --admin --name $RESOURCE_GROUP_NAME-aks --resource-group 
 
 
 az configure --defaults acr=${RESOURCE_GROUP_NAME}
-# az acr build -t devops-agent:latest ../dockeragent/
+az acr build -t devops-agent:latest ../dockeragent/
 
 # deploy tiller
 mv ../helm-certs.zip .

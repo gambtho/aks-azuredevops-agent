@@ -1,46 +1,22 @@
-FROM debian:stretch-slim
+FROM ubuntu:16.04
 
-ENV DEBIAN_FRONTEND noninteractive
+# To make it easier for build and release pipelines to run apt-get,
+# configure apt to not require confirmation (assume the -y argument by default)
+ENV DEBIAN_FRONTEND=noninteractive
+RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 
 RUN apt-get update \
-    && apt-get install apt-utils -qq 
-
-RUN apt-get install -qq --no-install-recommends \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    file \
-    ftp \
-    jq \
-    git \
-    gnupg \
-    iproute2 \
-    iputils-ping \
-    locales \
-    lsb-release \
-    netcat \
-    sudo \
-    time \
-    unzip \
-    wget \
-    zip \
-&& rm -rf /var/lib/apt/lists/* && apt-get clean
-
-# Install dotnet sdk
-RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg \
-    && mv microsoft.asc.gpg /etc/apt/trusted.gpg.d/ \
-    && wget -q https://packages.microsoft.com/config/debian/9/prod.list \
-    && mv prod.list /etc/apt/sources.list.d/microsoft-prod.list \
-    && apt-get update \
-    && apt-get -y install dotnet-sdk-2.1 \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /etc/apt/sources.list.d/* \
-    && apt-get clean
-
-ENV DOTNET_RUNNING_IN_CONTAINER=true \
-    DOTNET_USE_POLLING_FILE_WATCHER=true \
-    DOTNET_CLI_TELEMETRY_OPTOUT=true \
-    NUGET_XMLDOC_MODE=skip
+&& apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        jq \
+        git \
+        iputils-ping \
+        libcurl3 \
+        libicu55 \
+        libunwind8 \
+        netcat \
+&& apt-get clean 
 
 # Install Docker
 ENV DOCKER_VERSION 18.06.3-ce

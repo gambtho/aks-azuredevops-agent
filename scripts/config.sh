@@ -4,7 +4,7 @@ set -e
 # Script Parameters                                           #
 ###############################################################
 
-while getopts n:e:v:w:x: option
+while getopts n:e:v:w:x:l:p: option
 do
     case "${option}"
     in
@@ -13,6 +13,8 @@ do
     v) ADO_TOKEN=$(echo ${OPTARG} | base64);;
     w) ADO_POOL=$(echo ${OPTARG} | base64);;
     x) ADO_URL=$(echo ${OPTARG} | base64);;
+    l) LOCATION=${OPTARG};;
+    p) ADO_ACCOUNT=$(echo ${OPTARG} | base64);;
     esac
 done
 
@@ -26,7 +28,6 @@ if [ -z "$ENVIRONMENT" ]; then
 fi
 
 
-
 ###############################################################
 # Script Begins                                               #
 ###############################################################
@@ -38,10 +39,9 @@ az account set --subscription $ARM_SUBSCRIPTION_ID
 # get kubeconfig
 az aks get-credentials --admin --name $RESOURCE_GROUP_NAME-aks --resource-group $RESOURCE_GROUP_NAME
 
-
-
 az configure --defaults acr=${RESOURCE_GROUP_NAME}
-az acr build -t devops-agent:latest ../dockeragent/
+# az acr build -t azpagent:latest ../azpdocker/
+az acr build -t vstsagent:latest ../vstsdocker/
 
 # deploy tiller
 mv ../helm-certs.zip .
@@ -49,14 +49,9 @@ unzip helm-certs.zip
 
 set +e ## ignore errors if these exist already
 kubectl create namespace tiller-world
-kubectl create namespace ingress
-kubectl create namespace cert-manager
-# # Label the cert-manager namespace to disable resource validation
-kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
 set -e
 
 kubectl apply -f ../config/helm-rbac.yaml
-kubectl apply -f ../config/pod-security.yaml
 kubectl apply -f ../config/kured.yaml
 
 helm init --tiller-tls --tiller-tls-cert ./tiller.cert.pem \
@@ -68,29 +63,19 @@ cp helm.cert.pem ~/.helm/cert.pem
 cp helm.key.pem ~/.helm/key.pem
 
 az acr helm repo add
-helm repo add jetstack https://charts.jetstack.io
-helm repo update
 
-# Use Helm to deploy an NGINX ingress controller
-helm upgrade --tls --install --tiller-namespace=tiller-world nginx stable/nginx-ingress \
-    --namespace ingress \
-    --set controller.replicaCount=2 \
-    --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
-    --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
+echo "pushing agent to helm"
 
-# # Install the CustomResourceDefinition resources separately
-kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml
+# cd ../azpagent 
+# set +e
+# helm package .
+# ls -l *.tgz
+# az acr helm push --force *.tgz
+# rm -rf *.tgz
+# set -e
+# cd - 
 
-# # Install the cert-manager Helm chart
-helm upgrade --tls --install --tiller-namespace=tiller-world cert-manager \
-    jetstack/cert-manager --namespace cert-manager
-  
-# wait for cert-manager to be available
-sleep 5
-kubectl apply -f ../config/cluster-issuer.yaml
-
-
-cd ../agent 
+cd ../vstsagent 
 set +e
 helm package .
 ls -l *.tgz
@@ -100,17 +85,22 @@ set -e
 cd - 
 
 helm repo update
-
-
-helm fetch ${RESOURCE_GROUP_NAME}/agent
-
-echo "####################################################"
 az acr helm list
 
-set +e
-helm delete --purge --tls --tiller-namespace=tiller-world agent
-set -e
-helm upgrade --tls --install --tiller-namespace=tiller-world \
-    agent ${RESOURCE_GROUP_NAME}/agent --set \
-    azp.url=${ADO_URL},azp.token=${ADO_TOKEN},azp.pool=${ADO_POOL},image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/devops-agent
+# set +e
+# helm delete --purge --tls --tiller-namespace=tiller-world azpagent
+# set -e
+echo "deploying agent to k8s"
 
+ADO_TOKEN=$(tr -dc '[[:print:]]' <<< ${ADO_TOKEN})
+ADO_POOL=$(tr -dc '[[:print:]]' <<< ${ADO_POOL})
+ADO_URL=$(tr -dc '[[:print:]]' <<< ${ADO_URL})
+ADO_ACCOUNT=$(tr -dc '[[:print:]]' <<< ${ADO_ACCOUNT})
+
+# helm upgrade --tls --install --tiller-namespace=tiller-world azpagent ${RESOURCE_GROUP_NAME}/azpagent \
+#     --set azp.url=${ADO_URL},azp.token=${ADO_TOKEN},azp.pool=${ADO_POOL} \
+#     --set image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/azpagent 
+
+helm upgrade --tls --install --tiller-namespace=tiller-world vstsagent ${RESOURCE_GROUP_NAME}/vstsagent \
+    --set vsts.account=${ADO_ACCOUNT},vsts.token=${ADO_TOKEN},vsts.pool=${ADO_POOL} \
+    --set image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/vstsagent 

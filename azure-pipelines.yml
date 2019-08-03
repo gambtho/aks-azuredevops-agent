@@ -134,7 +134,7 @@ stages:
           azureSubscription:  $(azure_sub)
           scriptLocation: 'scriptPath' 
           scriptPath: ./scripts/config.sh
-          arguments: -e $(env) -n $(name) -v $(ado-token) -w $(ado-pool) -x $(ado-url)
+          arguments: -e $(env) -n $(name) -v $(ado-token) -w $(ado-pool) -x $(ado-url) -l $(location) -p $(ado-account)
 
 
 

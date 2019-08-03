@@ -14,8 +14,8 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
     location = eastus2 # where your resources will be created
     name = unique_name # prefix for resources
     env = env_identifier # suffix for resources
-    azure_sub = service_connection_name # name from step 2
-    terraform_version = 0.12.5 # version of terraform you wish to use
+    azure_sub = service_connection_name # sevice connection name from step 2
+    terraform_version = 0.12.6 # version of terraform you wish to use
     ```
 
 4. Create ARM variables that terraform and AKS will use for Azure Resource manager following these [instructions](https://www.terraform.io/docs/providers/azurerm/auth/service_principal_client_secret.html).   Save the values for appId and password. To make things easier you can copy these from the output, and export them into your shell.
@@ -27,13 +27,13 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
 
 5. Get the Client ID, Server App ID, and Server App Secret for Kubernetes to use while integrating with Azure Active Directory. Use the instructions in [AKS AAD Integration](https://docs.microsoft.com/en-us/azure/aks/azure-ad-integration-cli#create-azure-ad-server-component). Use the name from step 3 above plus -aks as the aksname variable ( aksname=${name}-aks ).  You only need to complete the Server and Client Component, do not follow the deploy cluster instructions.    Save the values for $serverApplicationId, $serverApplicationSecret, $clientApplicationId, these are exported as part of the instructions.  
 
-6. Get the url for your Azure DevOps account, will be something like https://dev.azure.com/<your_org> - $ADO_URL, create a [personal access token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts) - $TOKEN, and create an [agent pool](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/pools-queues?view=vsts) - $POOL
+6. Get the url for your Azure DevOps account, will be something like https://dev.azure.com/<your_org> - $ADO_URL, the organization name - $ADO_ACCOUNT, create a [personal access token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts) - $TOKEN, and create an [agent pool](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/pools-queues?view=vsts) - $POOL
 
-7. Create a resource group and keyvault, then add the variables created in step 4 and 5 into keyvault.  Name and env should be the values you used in step 3 above.
+7. Create a resource group and keyvault, then add the variables created in step 4 and 5 into keyvault.  Name and env should be the values you used in step 3 above.  The following commands can be used in your cli, or in [cloud shell](https://shell.azure.com).
 
     ```bash
     export name=<name from step 3>
-    export env=<name from step 3>
+    export env=<env from step 3>
     export location=<location from step 3>
     az group create --name $name --location $location
     az keyvault create --name $name$env --resource-group $name$env --location $location 
@@ -45,6 +45,7 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
     az keyvault secret set --vault-name $name$env --name ado-token --value $TOKEN # from step 6
     az keyvault secret set --vault-name $name$env --name ado-pool --value $POOL # from step 6
     az keyvault secret set --vault-name $name$env --name ado-url --value $ADO_URL # from step 6
+    az keyvault secret set --vault-name $name$env --name ado-account --value $ADO_ACCOUNT # from step 6
     ```
 
 8. Create another variable group named devops_kv, and associate this with the keyvault you just created.  Add all available variables, and authorize it for use in pipelines
@@ -61,11 +62,14 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
 - Convert to helm 3, and remove tiller
 - Simplify service principal setup
 - Simplify/reorganize pipeline jobs and stages
+- Add 2nd nodepool, with windows agents
+- Add cluster/pod autoscale
+- Use this (startup script)[https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/docker?view=azure-devops]
 
 ## Other options
 
-- Use a docker hub image, and remove the need for ACR
-- Remove the letsencrypt setup, and provide your own certificate
+- Use a docker hub image, and remove the need for ACR (gambtho/azure-pipeline-agent)
+- Add to vstsdocker/Dockerfile any additional tools you may need
 
 ## Contributions
 

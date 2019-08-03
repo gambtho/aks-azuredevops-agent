@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "azpagent.fullname" . }}-test-connection"
+  labels:
+{{ include "azpagent.labels" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['{{ include "azpagent.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

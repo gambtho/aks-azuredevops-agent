@@ -79,6 +79,14 @@ helm upgrade --tls --install --tiller-namespace=tiller-world nginx stable/nginx-
     --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
     --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux
 
+helm repo add azure-samples https://azure-samples.github.io/helm-charts/
+helm install azure-samples/aks-helloworld --namespace ingress-basic
+helm install azure-samples/aks-helloworld \
+    --namespace ingress \
+    --set title="AKS Ingress Demo" \
+    --set serviceName="ingress-demo"
+
+kubectl apply -f config/hello-world-ingress.yaml
 
 # # Install the CustomResourceDefinition resources separately
 kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.8/deploy/manifests/00-crds.yaml

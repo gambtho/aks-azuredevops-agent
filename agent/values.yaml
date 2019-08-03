@@ -1,18 +1,14 @@
-replicaCount: 1
-
+replicaCount: 3
 image:
   repository: gambtho/vstslinux
   tag: latest
   pullPolicy: Always
-
 service:
   type: ClusterIP
-
 azp:
   url: "replaceme"
   token: "replaceme"
   pool: "replaceme"
-
 ingress:
   enabled: true
   annotations: 
@@ -23,7 +19,6 @@ ingress:
     - secretName: tls-secret
       hosts:
         - devopsagent.acs
-
 resources: 
   limits:
     cpu: 200m
@@ -31,20 +26,4 @@ resources:
   requests:
     cpu: 100m
     memory: 256Mi
-
-env:
-  - name: VSTS_ACCOUNT
-    valueFrom:
-      secretKeyRef:
-        name: vsts
-        key: account
-  - name: VSTS_TOKEN
-    valueFrom:
-      secretKeyRef:
-        name: vsts
-        key: token
-  - name: VSTS_POOL
-    valueFrom:
-      secretKeyRef:
-        name: vsts
-        key: pool   
+ 

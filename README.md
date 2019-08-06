@@ -35,7 +35,7 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
     export name=<name from step 3>
     export env=<env from step 3>
     export location=<location from step 3>
-    az group create --name $name --location $location
+    az group create --name $name$env --location $location
     az keyvault create --name $name$env --resource-group $name$env --location $location 
     az keyvault secret set --vault-name $name$env --name ARM-CLIENT-ID --value $appId # from step 4
     az keyvault secret set --vault-name $name$env --name ARM-CLIENT-SECRET --value $password # from step 4 

@@ -40,8 +40,7 @@ az account set --subscription $ARM_SUBSCRIPTION_ID
 az aks get-credentials --admin --name $RESOURCE_GROUP_NAME-aks --resource-group $RESOURCE_GROUP_NAME
 
 az configure --defaults acr=${RESOURCE_GROUP_NAME}
-# az acr build -t azpagent:latest ../azpdocker/
-az acr build -t vstsagent:latest ../vstsdocker/
+az acr build -t azpagent:latest ../azpdocker/
 
 # deploy tiller
 mv ../helm-certs.zip .
@@ -66,16 +65,7 @@ az acr helm repo add
 
 echo "pushing agent to helm"
 
-# cd ../azpagent 
-# set +e
-# helm package .
-# ls -l *.tgz
-# az acr helm push --force *.tgz
-# rm -rf *.tgz
-# set -e
-# cd - 
-
-cd ../vstsagent 
+cd ../azpagent 
 set +e
 helm package .
 ls -l *.tgz
@@ -87,9 +77,6 @@ cd -
 helm repo update
 az acr helm list
 
-# set +e
-# helm delete --purge --tls --tiller-namespace=tiller-world azpagent
-# set -e
 echo "deploying agent to k8s"
 
 ADO_TOKEN=$(tr -dc '[[:print:]]' <<< ${ADO_TOKEN})
@@ -97,10 +84,6 @@ ADO_POOL=$(tr -dc '[[:print:]]' <<< ${ADO_POOL})
 ADO_URL=$(tr -dc '[[:print:]]' <<< ${ADO_URL})
 ADO_ACCOUNT=$(tr -dc '[[:print:]]' <<< ${ADO_ACCOUNT})
 
-# helm upgrade --tls --install --tiller-namespace=tiller-world azpagent ${RESOURCE_GROUP_NAME}/azpagent \
-#     --set azp.url=${ADO_URL},azp.token=${ADO_TOKEN},azp.pool=${ADO_POOL} \
-#     --set image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/azpagent 
-
-helm upgrade --tls --install --tiller-namespace=tiller-world vstsagent ${RESOURCE_GROUP_NAME}/vstsagent \
-    --set vsts.account=${ADO_ACCOUNT},vsts.token=${ADO_TOKEN},vsts.pool=${ADO_POOL} \
-    --set image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/vstsagent 
+helm upgrade --tls --install --tiller-namespace=tiller-world azpagent ${RESOURCE_GROUP_NAME}/azpagent \
+    --set azp.url=${ADO_URL},azp.token=${ADO_TOKEN},azp.pool=${ADO_POOL} \
+    --set image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/azpagent 

@@ -2,11 +2,9 @@
 set -e
 
 AZP_TOKEN=$(tr -dc '[[:print:]]' <<< ${AZP_TOKEN})
-AZP_AGENT_NAME=$(tr -dc '[[:print:]]' <<< ${AZP_AGENT_NAME})
 AZP_URL=$(tr -dc '[[:print:]]' <<< ${AZP_URL})
+AZP_POOL=$(tr -dc '[[:print:]]' <<< ${AZP_POOL})
 
-export VSTS_AGENT_HTTPTRACE=true
-export AZP_AGENT_HTTPTRACE=true
 
 if [ -z "$AZP_URL" ]; then
   echo 1>&2 "error: missing AZP_URL environment variable"

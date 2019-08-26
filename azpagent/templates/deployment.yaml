@@ -35,7 +35,7 @@ spec:
                 secretKeyRef:
                   name: azp
                   key: token
-            - name: AZP_AGENT_NAME
+            - name: AZP_POOL
               valueFrom:
                 secretKeyRef:
                   name: azp

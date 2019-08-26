@@ -63,6 +63,9 @@ RUN mkdir -p "/root/.microsoft/Team Foundation/4.0/Configuration/TEE-Mementos" \
  && cd "/root/.microsoft/Team Foundation/4.0/Configuration/TEE-Mementos" \
  && echo '<ProductIdData><eula-14.0 value="true"/></ProductIdData>' > "com.microsoft.tfs.client.productid.xml"
 
+# Install Az cli
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
 WORKDIR /azp
 
 COPY ./start.sh .

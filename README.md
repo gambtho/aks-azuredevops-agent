@@ -69,7 +69,7 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
 ## Other options
 
 - Use a docker hub image, and remove the need for ACR (gambtho/azure-pipeline-agent)
-- Add to vstsdocker/Dockerfile any additional tools you may need
+- Add to azpdocker/Dockerfile any additional tools you may need
 
 ## Contributions
 

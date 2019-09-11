@@ -76,8 +76,6 @@ else
     echo "Using resource group $RESOURCE_GROUP_NAME"
 fi
 
-set -e # errors matter again
-
 # Create storage account
 az storage account show -n $STORAGE_ACCOUNT_NAME -g $RESOURCE_GROUP_NAME > /dev/null
 if [ $? -eq 0 ]
@@ -96,6 +94,7 @@ else
     echo "KeyVault $RESOURCE_GROUP_NAME created -- this must be populated wth the k8s AAD values"
 fi
 
+set -e # errors matter again
 
 # Get storage account key
 ACCESS_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP_NAME --account-name $STORAGE_ACCOUNT_NAME --query [0].value -o tsv)

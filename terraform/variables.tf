@@ -25,7 +25,8 @@ variable "subscription" {
 variable "agents_count" {
   description = "The number of Agents that should exist in the Agent Pool"
 }
-
+#Tocheck on the version run from cli
+# az aks get-versions -l <region> --query 'orchestrators[-1].orchestratorVersion' -o tsv
 variable "kubernetes_version" {
   description = "Version of Kubernetes to install"
   default     = "1.13.7"

@@ -76,7 +76,6 @@ else
     echo "Using resource group $RESOURCE_GROUP_NAME"
 fi
 
-set -e # errors matter again
 
 # Create storage account
 az storage account show -n $STORAGE_ACCOUNT_NAME -g $RESOURCE_GROUP_NAME > /dev/null

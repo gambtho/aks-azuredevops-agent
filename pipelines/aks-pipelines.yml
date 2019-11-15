@@ -1,0 +1,65 @@
+name: AKS-$(Date:yyyyMMdd).$(Rev:.r)
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+    - dev
+
+variables:
+  - group: terraform_config
+  - group: terraform_secrets
+
+stages: 
+  - stage: dev
+    displayName: dev  
+    jobs: 
+    - job: setup
+      displayName: setup
+      pool:
+        vmImage: 'ubuntu-16.04'
+      steps: 
+      - template: templates/setup.yml
+        parameters:
+          env: $(env)
+          azure_sub: $(azure_sub)
+          name: $(name)
+          location: ${location}
+          ARMCLIENTID: $(ARM-CLIENT-ID)
+          ARMCLIENTSECRET: $(ARM-CLIENT-SECRET)
+    - job: plan
+      displayName: plan
+      dependsOn: setup
+      pool:
+        vmImage: 'ubuntu-16.04'
+      steps: 
+      - template: templates/plan.yml
+        parameters:
+          env: $(env)
+          azure_sub: $(azure_sub)
+          name: $(name)
+          ARMCLIENTID: $(ARM-CLIENT-ID)
+          ARMCLIENTSECRET: $(ARM-CLIENT-SECRET)
+    - deployment: apply
+      displayName: apply
+      environment: dev
+      pool:
+        vmImage: 'ubuntu-16.04'
+      dependsOn: plan
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - template: templates/apply.yml
+                parameters: 
+                  env: $(env)
+                  azure_sub: $(azure_sub)
+                  name: $(name)
+                  ARMCLIENTID: $(ARM-CLIENT-ID)
+                  ARMCLIENTSECRET: $(ARM-CLIENT-SECRET)
+                  ADOTOKEN:
+                  ADOPOOL:
+                  ADOURL:
+                  ADOACCOUNT:
+
+

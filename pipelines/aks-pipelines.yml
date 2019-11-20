@@ -7,8 +7,8 @@ trigger:
     - dev
 
 variables:
-  - group: terraform_config
-  - group: terraform_secrets
+  - group: ado-kv
+  - group: tapm
 
 stages: 
   - stage: dev

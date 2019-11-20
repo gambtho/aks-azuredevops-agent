@@ -9,28 +9,7 @@ steps:
 - task: DownloadPipelineArtifact@2
   inputs:
     artifact: plan
-    path: '$(System.DefaultWorkingDirectory/terraform'
-# - task: AzureCLI@2
-#   displayName: Init
-#   inputs:
-#     azureSubscription: ${{parameters.azure_sub}} 
-#     scriptType: bash
-#     scriptLocation: inlineScript
-#     inlineScript: |
-#         RESOURCE_GROUP_NAME=${{parameters.name}}${{parameters.env}}
-#         ARM_SUBSCRIPTION_ID=$(az account show --query id --out tsv)
-#         ARM_TENANT_ID=$(az account show --query tenantId --out tsv)
-#         az account set --subscription $ARM_SUBSCRIPTION_ID
-#         cd ./terraform
-#         terraform init -upgrade -input=false \
-#             -backend-config="resource_group_name=$RESOURCE_GROUP_NAME" \
-#             -backend-config="storage_account_name=$RESOURCE_GROUP_NAME" \
-#             -backend-config="client_secret=${{parameters.ARMCLIENTSECRET}}" \
-#             -backend-config="subscription_id=$ARM_SUBSCRIPTION_ID" \
-#             -backend-config="tenant_id=$ARM_TENANT_ID" \
-#             -backend-config="key=${{parameters.env}}.tfstate" \
-#             -backend-config="container_name=${{parameters.env}}" \
-#             -backend-config="client_id=${{parameters.ARMCLIENTID}}"     
+    path: '$(System.DefaultWorkingDirectory/terraform'    
 - task: AzureCLI@2
   displayName: Apply
   inputs:

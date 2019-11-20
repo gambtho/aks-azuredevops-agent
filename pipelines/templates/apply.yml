@@ -21,8 +21,15 @@ steps:
         ARM_TENANT_ID=$(az account show --query tenantId --out tsv)
         az account set --subscription $ARM_SUBSCRIPTION_ID
         cd ./terraform
-        ls -l
         terraform apply ${{parameters.env}}.plan
+- task: DownloadPipelineArtifact@2
+  inputs:
+    artifact: helm
+    path: '$(System.DefaultWorkingDirectory' 
+- task: DownloadPipelineArtifact@2
+  inputs:
+    artifact: docker
+    path: '$(System.DefaultWorkingDirectory/azpdocker' 
 - task: AzureCLI@2
   displayName: Config
   inputs:
@@ -36,7 +43,7 @@ steps:
         az aks get-credentials --admin --name $RESOURCE_GROUP_NAME-aks --resource-group $RESOURCE_GROUP_NAME
 
         az configure --defaults acr=${RESOURCE_GROUP_NAME}
-        az acr build -t azpagent:latest ../azpdocker/
+        az acr build -t azpagent:latest ./azpdocker
 
         # kubectl apply -f ../config/kured.yaml
 
@@ -45,15 +52,9 @@ steps:
         az acr helm repo add
 
         echo "pushing agent to helm"
+        ls -l
 
-        cd ../azpagent 
-        set +e
-        helm package .
-        ls -l *.tgz
         az acr helm push --force *.tgz
-        rm -rf *.tgz
-        set -e
-        cd - 
 
         helm repo update
         az acr helm list

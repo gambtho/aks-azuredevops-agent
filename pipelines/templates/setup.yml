@@ -68,7 +68,7 @@ steps:
     inlineScript: |
         helm init 
 
-        cd .azpagent 
+        cd ./azpagent 
         helm package .
         ls -l *.tgz
         ls

@@ -9,7 +9,7 @@ steps:
 - task: DownloadPipelineArtifact@2
   inputs:
     artifact: setup
-    path: '$(System.DefaultWorkingDirectory)'
+    path: '$(System.DefaultWorkingDirectory)/terraform'
 - task: AzureCLI@2
   displayName: Init
   inputs:
@@ -23,6 +23,7 @@ steps:
         az account set --subscription $ARM_SUBSCRIPTION_ID
         cd ./terraform
         ls -l 
+        cat terraf
         terraform init -input=false \
             -backend-config="resource_group_name=$RESOURCE_GROUP_NAME" \
             -backend-config="storage_account_name=$RESOURCE_GROUP_NAME" \

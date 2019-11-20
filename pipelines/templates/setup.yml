@@ -57,6 +57,7 @@ steps:
             arm_client_secret = "${{parameters.ARMCLIENTSECRET}}"
             location = "${{parameters.LOCATION}}"
         EOT
+        cat terraform.tfvars
 - task: PublishPipelineArtifact@1
   inputs:
     path: '$(System.DefaultWorkingDirectory)/terraform'

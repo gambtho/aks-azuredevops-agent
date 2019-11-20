@@ -7,7 +7,7 @@ provider "azurerm" {
 }
 
 data "azurerm_resource_group" "main" {
-  name = "${var.name}"
+  name = "${var.resource_group_name}"
 }
 
 module "kubernetes" {

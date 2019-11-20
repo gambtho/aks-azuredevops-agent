@@ -13,11 +13,11 @@ variable "arm_client_secret" {
   description = "app secret used by terraform"
 }
 
-variable "tenant" {
+variable "tenant_id" {
   description = "azure tenant id"
 }
 
-variable "subscription" {
+variable "subscription_id" {
   description = "azure subscription id"
 }
 
@@ -28,7 +28,7 @@ variable "agents_count" {
 
 variable "kubernetes_version" {
   description = "Version of Kubernetes to install"
-  default     = "1.13.7"
+  default     = "1.15.5"
 }
 
 variable "agents_size" {

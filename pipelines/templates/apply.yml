@@ -9,7 +9,7 @@ steps:
 - task: DownloadPipelineArtifact@2
   inputs:
     artifact: plan
-    path: '$(System.DefaultWorkingDirectory/terraform'    
+    path: '$(System.DefaultWorkingDirectory)/terraform'
 - task: AzureCLI@2
   displayName: Apply
   inputs:

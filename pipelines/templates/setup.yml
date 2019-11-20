@@ -66,15 +66,9 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-        RESOURCE_GROUP_NAME=${{parameters.name}}${{parameters.env}}
-        ARM_SUBSCRIPTION_ID=$(az account show --query id --out tsv)
-        az account set --subscription $ARM_SUBSCRIPTION_ID
-
-        az acr build -t azpagent:latest ../azpdocker/
-
         helm init 
 
-        cd ../azpagent 
+        cd .azpagent 
         helm package .
         ls -l *.tgz
         ls

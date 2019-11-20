@@ -42,6 +42,7 @@ steps:
         ARM_TENANT_ID=$(az account show --query tenantId --out tsv)
         az account set --subscription $ARM_SUBSCRIPTION_ID
         cd ./terraform
+        ls -l
         terraform apply ${{parameters.env}}.plan
 - task: AzureCLI@2
   displayName: Config

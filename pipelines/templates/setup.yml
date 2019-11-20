@@ -70,12 +70,12 @@ steps:
         helm package ./azpagent
         ls -l 
         ls -l ./azpagent
-- task: PublishPipelineArtifact@1
-  inputs:
-    path: '$(System.DefaultWorkingDirectory)/azpagent-0.1.0.tgz'
-    artifactName: helm
-- task: PublishPipelineArtifact@1
-  inputs:
-    path: '$(System.DefaultWorkingDirectory)/azpdocker'
-    artifactName: docker
+# - task: PublishPipelineArtifact@1
+#   inputs:
+#     path: '$(System.DefaultWorkingDirectory)/azpagent-0.1.0.tgz'
+#     artifactName: helm
+# - task: PublishPipelineArtifact@1
+#   inputs:
+#     path: '$(System.DefaultWorkingDirectory)/azpdocker'
+#     artifactName: docker
     

@@ -5,11 +5,11 @@ variable "name" {
 
 # azure 
 
-variable "ARM_CLIENT_ID" {
+variable "arm_client_id" {
   description = "app id used by terraform"
 }
 
-variable "ARM_CLIENT_SECRET" {
+variable "arm_client_secret" {
   description = "app secret used by terraform"
 }
 

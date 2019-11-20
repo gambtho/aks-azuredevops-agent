@@ -20,12 +20,14 @@ steps:
         ARM_SUBSCRIPTION_ID=$(az account show --query id --out tsv)
         ARM_TENANT_ID=$(az account show --query tenantId --out tsv)
         az account set --subscription $ARM_SUBSCRIPTION_ID
+        ls -l
+        ls -l ./terraform
         cd ./terraform
         terraform apply ${{parameters.env}}.plan
 - task: DownloadPipelineArtifact@2
   inputs:
     artifact: helm
-    path: '$(System.DefaultWorkingDirectory' 
+    path: '$(System.DefaultWorkingDirectory/helm' 
 - task: DownloadPipelineArtifact@2
   inputs:
     artifact: docker
@@ -54,7 +56,7 @@ steps:
         echo "pushing agent to helm"
         ls -l
 
-        az acr helm push --force *.tgz
+        az acr helm push --force ./helm/azpagent-0.1.0.tgz
 
         helm repo update
         az acr helm list

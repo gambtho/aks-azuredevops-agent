@@ -1,9 +1,9 @@
 provider "azurerm" {
   version         = "1.32.0"
-  tenant_id       = "${var.tenant}"
-  subscription_id = "${var.subscription}"
+  tenant_id       = "${var.tenant_id}"
+  subscription_id = "${var.subscription_id}"
   client_id       = "${var.arm_client_id}"
-  client_secret   = "${var.arn_client_secret}"
+  client_secret   = "${var.arm_client_secret}"
   partner_id      = "a79fe048-6869-45ac-8683-7fd2446fc73c"
 }
 

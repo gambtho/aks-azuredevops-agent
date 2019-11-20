@@ -1,4 +1,4 @@
-name: AKS-$(Date:yyyyMMdd).$(Rev:.r)
+name: Agent-$(Date:yyyyMMdd).$(Rev:.r)
 trigger:
   batch: true
   branches:
@@ -8,6 +8,7 @@ trigger:
 
 variables:
   - group: ado-kv
+  - group: ado-config
   - group: tapm
 
 stages: 

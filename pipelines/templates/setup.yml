@@ -58,24 +58,4 @@ steps:
   inputs:
     path: '$(System.DefaultWorkingDirectory)/terraform'
     artifactName: terraform
-- task: AzureCLI@2
-  displayName: Helm Package
-  inputs:
-    azureSubscription: ${{parameters.azure_sub}} 
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: |
-        helm init 
-
-        helm package ./azpagent
-        ls -l 
-        ls -l ./azpagent
-# - task: PublishPipelineArtifact@1
-#   inputs:
-#     path: '$(System.DefaultWorkingDirectory)/azpagent-0.1.0.tgz'
-#     artifactName: helm
-# - task: PublishPipelineArtifact@1
-#   inputs:
-#     path: '$(System.DefaultWorkingDirectory)/azpdocker'
-#     artifactName: docker
     

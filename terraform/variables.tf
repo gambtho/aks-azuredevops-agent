@@ -34,14 +34,3 @@ variable "kubernetes_version" {
 variable "agents_size" {
   description = "The default virtual machine size for the Kubernetes agents"
 }
-
-variable "client_app_id" {
-  description = "app id used for AKS clients"
-}
-variable "server_app_id" {
-  description = "app id used by AKS for AAD integration"
-}
-
-variable "server_app_secret" {
-  description = "app secret used by AKS for AAD integration"
-}

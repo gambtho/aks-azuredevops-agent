@@ -22,12 +22,12 @@ stages:
       steps: 
       - template: templates/setup.yml
         parameters:
-          env: $(env)
+          env: $(ADOENV)
           azure_sub: $(azure_sub)
-          name: $(name)
+          name: $(ADONAME)
           location: ${location}
-          ARMCLIENTID: $(ARM-CLIENT-ID)
-          ARMCLIENTSECRET: $(ARM-CLIENT-SECRET)
+          ARMCLIENTID: $(armclientid)
+          ARMCLIENTSECRET: $(armclientsecret)
     - job: plan
       displayName: plan
       dependsOn: setup
@@ -36,11 +36,11 @@ stages:
       steps: 
       - template: templates/plan.yml
         parameters:
-          env: $(env)
+          env: $(ADOENV)
           azure_sub: $(azure_sub)
-          name: $(name)
-          ARMCLIENTID: $(ARM-CLIENT-ID)
-          ARMCLIENTSECRET: $(ARM-CLIENT-SECRET)
+          name: $(ADONAME)
+          ARMCLIENTID: $(armclientid)
+          ARMCLIENTSECRET: $(armclientsecret)
     - deployment: apply
       displayName: apply
       environment: dev
@@ -53,9 +53,9 @@ stages:
             steps:
               - template: templates/apply.yml
                 parameters: 
-                  env: $(env)
+                  env: $(ADOENV)
                   azure_sub: $(azure_sub)
-                  name: $(name)
+                  name: $(ADONAME)
                   ARMCLIENTID: $(armclientid)
                   ARMCLIENTSECRET: $(armclientsecret)
                   ADOTOKEN: $(ADO-TOKEN)

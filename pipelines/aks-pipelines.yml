@@ -26,8 +26,8 @@ stages:
           azure_sub: $(azure_sub)
           name: $(ADONAME)
           location: ${location}
-          ARMCLIENTID: $(armclientid)
-          ARMCLIENTSECRET: $(armclientsecret)
+          ARMCLIENTID: $(ARM-CLIENT-ID)
+          ARMCLIENTSECRET: $(ARM-CLIENT-SECRET)
     - job: plan
       displayName: plan
       dependsOn: setup
@@ -39,8 +39,8 @@ stages:
           env: $(ADOENV)
           azure_sub: $(azure_sub)
           name: $(ADONAME)
-          ARMCLIENTID: $(armclientid)
-          ARMCLIENTSECRET: $(armclientsecret)
+          ARMCLIENTID: $(ARM-CLIENT-ID)
+          ARMCLIENTSECRET: $(ARM-CLIENT-SECRET)
     - deployment: apply
       displayName: apply
       environment: dev
@@ -56,8 +56,8 @@ stages:
                   env: $(ADOENV)
                   azure_sub: $(azure_sub)
                   name: $(ADONAME)
-                  ARMCLIENTID: $(armclientid)
-                  ARMCLIENTSECRET: $(armclientsecret)
+                  ARMCLIENTID: $(ARM-CLIENT-ID)
+                  ARMCLIENTSECRET: $(ARM-CLIENT-SECRET)
                   ADOTOKEN: $(ADO-TOKEN)
                   ADOPOOL: $(ADO-POOL)
                   ADOORG: $(ADO-ORG)

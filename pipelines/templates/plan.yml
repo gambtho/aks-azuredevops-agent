@@ -8,7 +8,7 @@ parameters:
 steps:
 - task: DownloadPipelineArtifact@2
   inputs:
-    artifact: setup
+    artifact: terraform
     path: '$(System.DefaultWorkingDirectory)/terraform'
 - task: AzureCLI@2
   displayName: Init
@@ -22,8 +22,6 @@ steps:
         ARM_TENANT_ID=$(az account show --query tenantId --out tsv)
         az account set --subscription $ARM_SUBSCRIPTION_ID
         cd ./terraform
-        ls -l 
-        cat terraf
         terraform init -input=false \
             -backend-config="resource_group_name=$RESOURCE_GROUP_NAME" \
             -backend-config="storage_account_name=$RESOURCE_GROUP_NAME" \

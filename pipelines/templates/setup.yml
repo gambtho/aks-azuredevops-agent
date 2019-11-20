@@ -68,13 +68,12 @@ steps:
     inlineScript: |
         helm init 
 
-        cd ./azpagent 
-        helm package .
-        ls -l *.tgz
-        ls
+        helm package ./azpagent
+        ls -l 
+        ls -l ./azpagent
 - task: PublishPipelineArtifact@1
   inputs:
-    path: '$(System.DefaultWorkingDirectory)/azpagent/azpagent.0.1.0.tgz'
+    path: '$(System.DefaultWorkingDirectory)/azpagent-0.1.0.tgz'
     artifactName: helm
 - task: PublishPipelineArtifact@1
   inputs:

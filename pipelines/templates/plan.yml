@@ -8,8 +8,8 @@ parameters:
 steps:
 - task: DownloadPipelineArtifact@2
   inputs:
-    artifact: vars
-    path: '$(System.DefaultWorkingDirectory)/terraform/'
+    artifact: setup
+    path: '$(System.DefaultWorkingDirectory)'
 - task: AzureCLI@2
   displayName: Init
   inputs:
@@ -22,8 +22,7 @@ steps:
         ARM_TENANT_ID=$(az account show --query tenantId --out tsv)
         az account set --subscription $ARM_SUBSCRIPTION_ID
         cd ./terraform
-        cp ../variables/${{parameters.env}}.auto.tfvars .
-        terraform init -upgrade -input=false \
+        terraform init -input=false \
             -backend-config="resource_group_name=$RESOURCE_GROUP_NAME" \
             -backend-config="storage_account_name=$RESOURCE_GROUP_NAME" \
             -backend-config="client_secret=${{parameters.ARMCLIENTSECRET}}" \
@@ -43,7 +42,6 @@ steps:
         ARM_TENANT_ID=$(az account show --query tenantId --out tsv)
         az account set --subscription $ARM_SUBSCRIPTION_ID
         cd ./terraform
-        cp ../variables/${{parameters.env}}.auto.tfvars ${{parameters.env}}.auto.tfvars
         terraform plan --out=${{parameters.env}}.plan
 - task: PublishPipelineArtifact@1
   inputs:

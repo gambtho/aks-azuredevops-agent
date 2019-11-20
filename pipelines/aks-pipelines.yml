@@ -56,11 +56,8 @@ stages:
                   env: $(env)
                   azure_sub: $(azure_sub)
                   name: $(name)
-                  ARMCLIENTID: $(ARM-CLIENT-ID)
-                  ARMCLIENTSECRET: $(ARM-CLIENT-SECRET)
-                  ADOTOKEN:
-                  ADOPOOL:
-                  ADOURL:
-                  ADOACCOUNT:
-
-
+                  ARMCLIENTID: $(armclientid)
+                  ARMCLIENTSECRET: $(armclientsecret)
+                  ADOTOKEN: $(ADO-TOKEN)
+                  ADOPOOL: $(ADO-POOL)
+                  ADOORG: $(ADO-ORG)

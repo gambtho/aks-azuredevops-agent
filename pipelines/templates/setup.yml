@@ -5,4 +5,8 @@ steps:
   inputs:
     path: '$(System.DefaultWorkingDirectory)/terraform'
     artifactName: terraform
+- task: PublishPipelineArtifact@1
+  inputs:
+    path: '$(System.DefaultWorkingDirectory)/azpdocker'
+    artifactName: docker
     

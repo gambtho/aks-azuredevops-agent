@@ -23,6 +23,7 @@ stages:
       - template: templates/setup.yml
   - stage: dev
     displayName: Dev  
+    jobs:
     - job: plan
       displayName: plan
       dependsOn: setup

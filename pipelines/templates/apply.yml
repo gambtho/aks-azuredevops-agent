@@ -6,7 +6,7 @@ parameters:
 steps:
 - task: DownloadPipelineArtifact@2
   inputs:
-    artifact: plan
+    artifact: ${{parameters.env}}
     path: '$(System.DefaultWorkingDirectory)/terraform'
 - task: AzureCLI@2
   displayName: Apply
@@ -15,10 +15,7 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-        ARM_SUBSCRIPTION_ID=$(az account show --query id --out tsv)
-        ARM_TENANT_ID=$(az account show --query tenantId --out tsv)
-        az account set --subscription $ARM_SUBSCRIPTION_ID
-        echo "newest apply"
+        echo "newest apply part2"
         cd ./terraform
-        chmod +x .terraform/plugins/linux_amd64/terraform-provider-azurerm_v1.32.0_x4
+        chmod +x .terraform/plugins/linux_amd64/terraform-provider-azurerm_v1.*
         terraform apply ${{parameters.env}}.plan

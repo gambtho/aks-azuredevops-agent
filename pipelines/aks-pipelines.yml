@@ -12,22 +12,17 @@ variables:
   - group: tapm
 
 stages: 
-  - stage: dev
-    displayName: dev  
+  - stage: init
+    displayName: Init
     jobs: 
-    - job: setup
-      displayName: setup
+    - job: setup 
+      displayName: Terraform Validate and Publish
       pool:
         vmImage: 'ubuntu-16.04'
       steps: 
       - template: templates/setup.yml
-        parameters:
-          env: $(ADOENV)
-          azure_sub: $(azure_sub)
-          name: $(ADONAME)
-          location: ${location}
-          ARMCLIENTID: $(ARM-CLIENT-ID)
-          ARMCLIENTSECRET: $(ARM-CLIENT-SECRET)
+  - stage: dev
+    displayName: Dev  
     - job: plan
       displayName: plan
       dependsOn: setup

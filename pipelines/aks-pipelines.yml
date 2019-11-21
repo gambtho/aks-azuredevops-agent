@@ -26,7 +26,6 @@ stages:
     jobs:
     - job: plan
       displayName: plan
-      dependsOn: setup
       pool:
         vmImage: 'ubuntu-16.04'
       steps: 

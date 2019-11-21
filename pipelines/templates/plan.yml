@@ -42,7 +42,7 @@ steps:
         ARM_TENANT_ID=$(az account show --query tenantId --out tsv)
         az account set --subscription $ARM_SUBSCRIPTION_ID
         cd ./terraform
-        terraform plan --out=${{parameters.env}}.plan
+        terraform plan -var="arm_client_id=${{parameters.ARMCLIENTID}}" -var="arm_client_secret=${{parameters.ARMCLIENTSECRET}}" --out=${{parameters.env}}.plan
 - task: PublishPipelineArtifact@1
   inputs:
     path: '$(System.DefaultWorkingDirectory)/terraform'

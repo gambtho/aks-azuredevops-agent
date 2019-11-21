@@ -2,12 +2,6 @@ parameters:
   env: ''
   azure_sub: ''
   name: ''
-  AADCLIENTID: ''
-  AADSERVERID: ''
-  AADSERVERSECRET: ''
-  ARMCLIENTID: ''
-  ARMCLIENTSECRET: ''
-  location: ''
 
 steps:
 - bash: terraform fmt ./terraform
@@ -51,8 +45,6 @@ steps:
             tenant_id = "${ARM_TENANT_ID}"
             subscription_id = "${ARM_SUBSCRIPTION_ID}"
             resource_group_name = "${RESOURCE_GROUP_NAME}"
-            arm_client_id = "${{parameters.ARMCLIENTID}}"
-            arm_client_secret = "${{parameters.ARMCLIENTSECRET}}"
         EOT
 - task: PublishPipelineArtifact@1
   inputs:

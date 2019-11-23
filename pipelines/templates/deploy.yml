@@ -31,6 +31,9 @@ steps:
         helm repo update
 
         az acr helm list
+        help repo list
+        helm list
+        helm fetch ${RESOURCE_GROUP_NAME}/azpagent
 
         ADO_TOKEN=$(tr -dc '[[:print:]]' <<< ${ADO_TOKEN})
         ADO_POOL=$(tr -dc '[[:print:]]' <<< ${ADO_POOL})

@@ -37,6 +37,7 @@ steps:
         ./get_helm.sh -v v3.0.0
 
         helm init 
+        az acr helm repo add
         helm package ./azpagent
         
         echo "pushing agent to helm"

@@ -60,7 +60,7 @@ steps:
         ARM_SUBSCRIPTION_ID=$(az account show --query id --out tsv)
         ARM_TENANT_ID=$(az account show --query tenantId --out tsv)
         cd ./terraform
-        terraform init -input=false \
+        terraform init --upgrade -input=false \
             -backend-config="resource_group_name=$RESOURCE_GROUP_NAME" \
             -backend-config="storage_account_name=$RESOURCE_GROUP_NAME" \
             -backend-config="client_secret=${{parameters.ARMCLIENTSECRET}}" \

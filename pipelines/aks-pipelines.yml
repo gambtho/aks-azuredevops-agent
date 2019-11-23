@@ -35,7 +35,7 @@ stages:
     displayName: Dev  
     jobs:
     - job: plan
-      displayName: Plan
+      displayName: Plan Terraform for K8s 
       pool:
         vmImage: 'ubuntu-16.04'
       steps: 

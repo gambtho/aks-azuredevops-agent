@@ -41,7 +41,8 @@ steps:
         
         echo "pushing agent to helm"
 
-        az acr helm push --force ./helm/azpagent-0.1.0.tgz
+        az acr helm push --force ./azpagent-0.1.0.tgz
+        
         helm repo update
         az acr helm list
 

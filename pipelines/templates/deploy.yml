@@ -20,6 +20,11 @@ steps:
         az aks get-credentials --admin --name $RESOURCE_GROUP_NAME-aks --resource-group $RESOURCE_GROUP_NAME
 
         az configure --defaults acr=${RESOURCE_GROUP_NAME}
+        
+        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
+        chmod 700 get_helm.sh
+        ./get_helm.sh
+        
         helm init 
 
         az acr helm repo add

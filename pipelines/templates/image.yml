@@ -31,6 +31,11 @@ steps:
         az account set --subscription $ARM_SUBSCRIPTION_ID
         az configure --defaults acr=${RESOURCE_GROUP_NAME}
         az acr helm repo add
+
+        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
+        chmod 700 get_helm.sh
+        ./get_helm.sh
+
         helm init 
         helm package ./azpagent
         

@@ -24,11 +24,13 @@ steps:
         curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
         chmod 700 get_helm.sh
         ./get_helm.sh
-        
+
         helm init 
 
         az acr helm repo add
         helm repo update
+
+        az acr helm list
 
         ADO_TOKEN=$(tr -dc '[[:print:]]' <<< ${ADO_TOKEN})
         ADO_POOL=$(tr -dc '[[:print:]]' <<< ${ADO_POOL})

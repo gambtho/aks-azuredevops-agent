@@ -77,6 +77,7 @@ steps:
     scriptLocation: inlineScript
     inlineScript: |
         cd ./terraform
+        terraform destroy -auto-approve -var="arm_client_id=${{parameters.ARMCLIENTID}}" -var="arm_client_secret=${{parameters.ARMCLIENTSECRET}}"
         terraform plan -var="arm_client_id=${{parameters.ARMCLIENTID}}" -var="arm_client_secret=${{parameters.ARMCLIENTSECRET}}" --out=${{parameters.env}}.plan
 - task: PublishPipelineArtifact@1
   inputs:

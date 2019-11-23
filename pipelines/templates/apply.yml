@@ -6,7 +6,7 @@ parameters:
 steps:
 - task: DownloadPipelineArtifact@2
   inputs:
-    artifact: ${{parameters.env}}
+    artifact: plan-${{parameters.env}}
     path: '$(System.DefaultWorkingDirectory)/terraform'
 - task: AzureCLI@2
   displayName: Apply

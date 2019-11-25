@@ -49,7 +49,7 @@ steps:
             --set azp.url='https://dev.azure.com/${ADO_ORG}' --set azp.token=${ADOTOKEN} \
             --set azp.pool=${ADO_POOL} --set image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/azpagent"
 
-        helm delete --purge azpagent
+        helm delete azpagent
 
         helm upgrade --install azpagent ${RESOURCE_GROUP_NAME}/azpagent \
             --set azp.url="https://dev.azure.com/ATTDevOps" \

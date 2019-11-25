@@ -32,18 +32,18 @@ steps:
 
         az acr helm list
         help repo list
-        helm list
         helm fetch ${RESOURCE_GROUP_NAME}/azpagent
 
         ADO_TOKEN=$(tr -dc '[[:print:]]' <<< ${ADO_TOKEN})
         ADO_POOL=$(tr -dc '[[:print:]]' <<< ${ADO_POOL})
-        ADO_URL=$(tr -dc '[[:print:]]' <<< ${ADO_URL})
-        ADO_ACCOUNT=$(tr -dc '[[:print:]]' <<< ${ADO_ACCOUNT})
+        ADO_ORG=$(tr -dc '[[:print:]]' <<< ${ADO_ORG})
+
 
         echo "deploying agent to k8s"
 
         helm upgrade --install azpagent ${RESOURCE_GROUP_NAME}/azpagent \
-            --set azp.url=${ADO_URL},azp.token=${ADO_TOKEN},azp.pool=${ADO_POOL} \
+            --set azp.url="https://dev.azure.com/${ADO_ORG}",azp.token=${ADO_TOKEN},azp.pool=${ADO_POOL} \
             --set image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/azpagent 
+
         # kubectl apply -f ../config/kured.yaml
 

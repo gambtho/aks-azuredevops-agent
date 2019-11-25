@@ -34,17 +34,15 @@ steps:
         help repo list
         helm fetch ${RESOURCE_GROUP_NAME}/azpagent
 
-        ADO_TOKEN=$(tr -dc '[[:print:]]' <<< ${ADO_TOKEN})
-        ADO_POOL=$(tr -dc '[[:print:]]' <<< ${ADO_POOL})
-        ADO_ORG=$(tr -dc '[[:print:]]' <<< ${ADO_ORG})
+        ADO_TOKEN=$(tr -dc '[[:print:]]' <<< ${ADOTOKEN})
+        ADO_POOL=$(tr -dc '[[:print:]]' <<< ${ADOPOOL})
+        ADO_ORG=$(tr -dc '[[:print:]]' <<< ${ADOORG})
 
         echo "deploying agent to k8s"
 
         echo "helm upgrade --install azpagent ${RESOURCE_GROUP_NAME}/azpagent \
-            --set azp.url='https://dev.azure.com/${ADO_ORG}' \
-            --set azp.token=${ADO_TOKEN} \
-            --set azp.pool=${ADO_POOL} \
-            --set image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/azpagent"
+            --set azp.url='https://dev.azure.com/${ADO_ORG}' --set azp.token=${ADO_TOKEN} \
+            --set azp.pool=${ADO_POOL} --set image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/azpagent"
 
         helm upgrade --install azpagent ${RESOURCE_GROUP_NAME}/azpagent \
             --set azp.url=https://dev.azure.com/${ADO_ORG} \

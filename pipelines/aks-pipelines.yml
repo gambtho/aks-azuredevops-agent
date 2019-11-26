@@ -79,5 +79,5 @@ stages:
                   azure_sub: $(azure_sub)
                   name: $(ADONAME)
                   ADOTOKEN: $(NEW-ADO-TOKEN)
-                  ADOPOOL: $(ADO-POOL)
-                  ADOORG: $(ADO-ORG)
+                  ADOPOOL: $(NEW-ADO-POOL)
+                  ADOORG: $(NEW-ADO-ORG)

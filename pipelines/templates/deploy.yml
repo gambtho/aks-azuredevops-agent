@@ -51,7 +51,7 @@ steps:
 
         helm install azpagents ${RESOURCE_GROUP_NAME}/azpagent \
             --set azp.url="https://dev.azure.com/ATTDevOps" \
-            --set azp.token=${ADOTOKEN} \
+            --set azp.token="MTIzNDUK" \
             --set azp.pool="Default" \
             --set image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/azpagent 
 

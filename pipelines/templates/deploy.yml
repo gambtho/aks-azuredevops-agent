@@ -50,9 +50,9 @@ steps:
             --set azp.pool=${ADO_POOL} --set image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/azpagent"
 
         helm install azpagentes ${RESOURCE_GROUP_NAME}/azpagent \
-            --set azp.url=ADO_URL \
-            --set azp.token=ADO_TOKEN \
-            --set azp.pool=ADO_POOL \
+            --set azp.url=${ADO_URL} \
+            --set azp.token=${ADO_TOKEN} \
+            --set azp.pool=${ADO_POOL} \
             --set image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/azpagent 
 
         # kubectl apply -f ../config/kured.yaml

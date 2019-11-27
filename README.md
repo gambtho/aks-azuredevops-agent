@@ -2,67 +2,40 @@
 
 [![Build Status](https://dev.azure.com/thomasgamble2/ado-agent/_apis/build/status/ado-agent?branchName=master)](https://dev.azure.com/thomasgamble2/ado-agent/_build/latest?definitionId=7&branchName=master)
 
-This repo provides instructions and configuration to setup Self Hosted Agents for Azure DevOps running on an AKS cluster.  It was derived from this [article](https://medium.com/beyondthecorneroffice/host-azure-devops-build-containers-on-aks-beb7239026b2) by Jonathan Gardner @jgardner04, as well as a similar project by Mate Barbas using ARM templates.   This project utilizes terraform and helm to provide support for a repeatable infrastructure as code approach.  The process is orchestrated through an **Azure DevOps (ADO) pipeline**. The provided shell scripts will create a storage account to keep the terraform remote state.  The AKS cluster created will make use of Azure AD intregrated RBAC. Upon completion of the cluster creation, helm tiller will be installed on the cluster and kured will be setup to provide automated node restarts when updates are needed.
+This repo provides instructions and configuration to setup Self Hosted Agents for Azure DevOps running on an AKS cluster.  It was derived from this [article](https://medium.com/beyondthecorneroffice/host-azure-devops-build-containers-on-aks-beb7239026b2) by Jonathan Gardner @jgardner04, as well as a similar project by Mate Barbas using ARM templates.   This project utilizes terraform and helm to provide support for a repeatable infrastructure as code approach.  The process is orchestrated through an **Azure DevOps (ADO) pipeline**. 
 
 ## Setup
 
-1. Create an Azure DevOps (ADO) project (ensure the preview feature multi-stage pipelines is turned on), and clone or fork this repo into it
+1. Create an Azure DevOps (ADO) project, and clone or fork this repo into it
+    - Make sure you enable the **Multi-stage pipelines** preview feature for your user or your org  by following the directions [here](https://docs.microsoft.com/en-us/azure/devops/project/navigation/preview-features?view=azure-devops) 
+---
 2. Create an Azure Resource Manager **Service connection** in Azure DevOps
-3. In pipeline/library add a variable group named devops_agent, with the following variables
-
-    ```bash
-    location = eastus2 # where your resources will be created
-    name = unique_name # prefix for resources
-    env = env_identifier # suffix for resources
-    azure_sub = service_connection_name # sevice connection name from step 2
-    terraform_version = 0.12.6 # version of terraform you wish to use
-    ```
-
-4. Create ARM variables that terraform and AKS will use for Azure Resource manager following these [instructions](https://www.terraform.io/docs/providers/azurerm/auth/service_principal_client_secret.html).   Save the values for appId and password. To make things easier you can copy these from the output, and export them into your shell.
-
-    ```bash
-    export appId=<paste the appID value>
-    export password=<paste the password value>
-    ```
-
-6. Get the url for your Azure DevOps account, will be something like https://dev.azure.com/<your_org> - $ADO_URL, the organization name - $ADO_ACCOUNT, create a [personal access token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts) - $TOKEN, and create an [agent pool](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/pools-queues?view=vsts) - $POOL
-
-7. Create a resource group and keyvault, then add the variables created in step 4 and 5 into keyvault.  Name and env should be the values you used in step 3 above.  The following commands can be used in your cli, or in [cloud shell](https://shell.azure.com).
-
-    ```bash
-    export name=<name from step 3>
-    export env=<env from step 3>
-    export location=<location from step 3>
-    az group create --name $name$env --location $location
-    az keyvault create --name $name$env --resource-group $name$env --location $location 
-    az keyvault secret set --vault-name $name$env --name ARM-CLIENT-ID --value $appId # from step 4
-    az keyvault secret set --vault-name $name$env --name ARM-CLIENT-SECRET --value $password # from step 4 
-    az keyvault secret set --vault-name $name$env --name server-app-id --value $serverApplicationId # from step 5
-    az keyvault secret set --vault-name $name$env --name server-app-secret --value $serverApplicationSecret # from step 5
-    az keyvault secret set --vault-name $name$env --name client-app-id --value $clientApplicationId # from step 5
-    az keyvault secret set --vault-name $name$env --name ado-token --value $TOKEN # from step 6
-    az keyvault secret set --vault-name $name$env --name ado-pool --value $POOL # from step 6
-    az keyvault secret set --vault-name $name$env --name ado-url --value $ADO_URL # from step 6
-    az keyvault secret set --vault-name $name$env --name ado-account --value $ADO_ACCOUNT # from step 6
-    ```
-
-8. Create another variable group named devops_kv, and associate this with the keyvault you just created.  Add all available variables, and authorize it for use in pipelines
-
-9. Add [Terraform tasks](https://marketplace.visualstudio.com/items?itemName=charleszipp.azure-pipelines-tasks-terraform)  to your ADO organization
-
-10. Follow these [instructions](https://helm.sh/docs/tiller_ssl/) to setup certificates that will be used by helm, and upload them as a library/secure file named helm-certs.zip (make sure to authorize this for use in pipelines)
-
-11. Create a pipeline using the azure-pipelines.yml file, and run it
+---
+3. Run the manual setup script **./manual.sh** from [Azure CLI](https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart) or [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10) on your wokstation, this script does the following:
+    - Create service principals for use by terraform and AKS
+    - Save service principal and other provided variables in keyvault
+    
+   This command will ask for your Azure subscription id, as well as the name (arbitrary string of your choice), env (arbitrary string of your choice), and location (valid Azure region) for your AKS cluster.
+---
+4. Create another variable group named "ado-kv" and associate it with the key vault you just created:
+   - Toggle **Link secrets from an Azure key vault as variables**
+   - Select your subscription and the key vault you created in the previous step
+   - **Authorize** it for use in the pipelines
+   - Add all the variables aviable in your key vault
+---
+5. Create a pipeline using the provided YAML file **./pipelines/aks-pipelines.yml**, and run it:
+    - From Azure DevOps click on **Pipelines** in the left navigation bar and click on **Create pipeline**
+    - On the page **Where is your code?** select **Azure Repos Git YAML**
+    - Select your repository in Azure DevOps
+    - On the page **Configure your pipeline** select **Existing Azure Pipelines YAML file** and set the path to **/aks/pipelines/aks-pipelines.yml** 
+    - Click on **Continue** and then on **Run**
+---
 
 ## Possible additions
 
-- Use [Terraform tasks](https://marketplace.visualstudio.com/items?itemName=ms-devlabs.custom-terraform-tasks) from Microsoft DevLabs
-- Convert to helm 3, and remove tiller
-- Simplify service principal setup
-- Simplify/reorganize pipeline jobs and stages
+- Consider AAD integrated AKS cluster (not currently used, as it makes the AD permissions required a bit complex )
 - Add 2nd nodepool, with windows agents
 - Add cluster/pod autoscale
-- Use this [startup script](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/docker?view=azure-devops)
 
 ## Other options
 
@@ -76,3 +49,4 @@ This repo is a work in progress, pull requests and suggestions are greatly appre
 ## Maintainers
 
 Thomas Gamble thgamble@microsoft.com
+

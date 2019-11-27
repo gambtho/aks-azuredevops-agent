@@ -23,7 +23,12 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
    - **Authorize** it for use in the pipelines
    - Add all the variables aviable in your key vault
 ---
-5. Create a pipeline using the provided YAML file **./pipelines/aks-pipelines.yml**, and run it:
+5. Create another variable group named "ado-config":
+    - Add a variable named azure_sub
+    - Set that value for the created variable as the name used for the Service Connection in step 2
+    - **Authorize** it for use in the pipelines
+---
+6. Create a pipeline using the provided YAML file **./pipelines/aks-pipelines.yml**, and run it:
     - From Azure DevOps click on **Pipelines** in the left navigation bar and click on **Create pipeline**
     - On the page **Where is your code?** select **Azure Repos Git YAML**
     - Select your repository in Azure DevOps

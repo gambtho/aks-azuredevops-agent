@@ -1,0 +1,11 @@
+steps:
+- bash: terraform fmt -check -recursive ./terraform
+  displayName: Format
+- bash: terraform init -backend=false ./terraform
+  displayName: Init
+- bash: terraform validate ./terraform
+  displayName: Validate
+- task: PublishPipelineArtifact@1
+  inputs:
+    path: '$(System.DefaultWorkingDirectory)/terraform'
+    artifactName: terraform

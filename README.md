@@ -25,8 +25,6 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
     export password=<paste the password value>
     ```
 
-5. Get the Client ID, Server App ID, and Server App Secret for Kubernetes to use while integrating with Azure Active Directory. Use the instructions in [AKS AAD Integration](https://docs.microsoft.com/en-us/azure/aks/azure-ad-integration-cli#create-azure-ad-server-component). Use the name from step 3 above plus -aks as the aksname variable ( aksname=${name}-aks ).  You only need to complete the Server and Client Component, do not follow the deploy cluster instructions.    Save the values for $serverApplicationId, $serverApplicationSecret, $clientApplicationId, these are exported as part of the instructions.  
-
 6. Get the url for your Azure DevOps account, will be something like https://dev.azure.com/<your_org> - $ADO_URL, the organization name - $ADO_ACCOUNT, create a [personal access token](https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=vsts) - $TOKEN, and create an [agent pool](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/pools-queues?view=vsts) - $POOL
 
 7. Create a resource group and keyvault, then add the variables created in step 4 and 5 into keyvault.  Name and env should be the values you used in step 3 above.  The following commands can be used in your cli, or in [cloud shell](https://shell.azure.com).

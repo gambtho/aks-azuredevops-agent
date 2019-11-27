@@ -1,0 +1,86 @@
+parameters:
+  env: ''
+  azure_sub: ''
+  name: ''
+  ARMCLIENTID: ''
+  ARMCLIENTSECRET: ''
+
+steps:
+- task: DownloadPipelineArtifact@2
+  inputs:
+    artifact: terraform
+    path: '$(System.DefaultWorkingDirectory)/terraform'  
+- task: AzureCLI@2
+  displayName: Terraform Config
+  inputs:
+    azureSubscription: ${{parameters.azure_sub}} 
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+        RESOURCE_GROUP_NAME=${{parameters.name}}${{parameters.env}}
+        ARM_SUBSCRIPTION_ID=$(az account show --query id --out tsv)
+        ARM_TENANT_ID=$(az account show --query tenantId --out tsv)
+        set +e
+        if [ $(az group exists -n $RESOURCE_GROUP_NAME -o tsv) = false ]
+        then
+            echo "Resource Group $RESOURCE_GROUP_NAME needs to be created"
+        else
+            echo "Using resource group $RESOURCE_GROUP_NAME"
+        fi
+        az storage account show -n $RESOURCE_GROUP_NAME -g $RESOURCE_GROUP_NAME > /dev/null
+        if [ $? -eq 0 ]
+        then
+            echo "Using storage account $RESOURCE_GROUP_NAME in resource group $RESOURCE_GROUP_NAME"
+        else
+            az storage account create --resource-group $RESOURCE_GROUP_NAME --name $RESOURCE_GROUP_NAME --sku Standard_LRS --encryption-services blob
+        fi
+        az keyvault show --name $RESOURCE_GROUP_NAME > /dev/null
+        if [ $? -eq 0 ]
+        then
+            echo "Using keyvault $RESOURCE_GROUP_NAME"
+        else
+            echo "KeyVault $RESOURCE_GROUP_NAME needs to be created and populated wth the appropriate values"
+        fi
+        set -e
+        az storage container create --name ${{parameters.env}} --account-name $RESOURCE_GROUP_NAME
+        cd ./terraform
+        cat <<EOT >> terraform.tfvars
+            tenant_id = "${ARM_TENANT_ID}"
+            subscription_id = "${ARM_SUBSCRIPTION_ID}"
+            resource_group_name = "${RESOURCE_GROUP_NAME}"
+        EOT
+- task: AzureCLI@2
+  displayName: Init
+  inputs:
+    azureSubscription: ${{parameters.azure_sub}} 
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+        RESOURCE_GROUP_NAME=${{parameters.name}}${{parameters.env}}
+        ARM_SUBSCRIPTION_ID=$(az account show --query id --out tsv)
+        ARM_TENANT_ID=$(az account show --query tenantId --out tsv)
+        cd ./terraform
+        terraform init --upgrade -input=false \
+            -backend-config="resource_group_name=$RESOURCE_GROUP_NAME" \
+            -backend-config="storage_account_name=$RESOURCE_GROUP_NAME" \
+            -backend-config="client_secret=${{parameters.ARMCLIENTSECRET}}" \
+            -backend-config="subscription_id=$ARM_SUBSCRIPTION_ID" \
+            -backend-config="tenant_id=$ARM_TENANT_ID" \
+            -backend-config="key=${{parameters.env}}.tfstate" \
+            -backend-config="container_name=${{parameters.env}}" \
+            -backend-config="client_id=${{parameters.ARMCLIENTID}}"   
+- task: AzureCLI@2
+  displayName: Plan
+  inputs:
+    azureSubscription: ${{parameters.azure_sub}} 
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+        cd ./terraform
+        terraform plan -var="arm_client_id=${{parameters.ARMCLIENTID}}" -var="arm_client_secret=${{parameters.ARMCLIENTSECRET}}" --out=${{parameters.env}}.plan
+- task: PublishPipelineArtifact@1
+  inputs:
+    path: '$(System.DefaultWorkingDirectory)/terraform'
+    artifactName: plan-${{parameters.env}}
+
+

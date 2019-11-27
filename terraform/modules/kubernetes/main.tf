@@ -14,22 +14,12 @@ resource "azurerm_kubernetes_cluster" "main" {
   }
 
   network_profile {
-    network_plugin     = "kubenet"
+    network_plugin = "kubenet"
   }
 
   service_principal {
     client_id     = "${var.service_principal_client_id}"
     client_secret = "${var.service_principal_client_secret}"
-  }
-
-  role_based_access_control {
-    enabled = true
-
-    azure_active_directory {
-      client_app_id     = "${var.client_app_id}"
-      server_app_id     = "${var.server_app_id}"
-      server_app_secret = "${var.server_app_secret}"
-    }
   }
 }
 

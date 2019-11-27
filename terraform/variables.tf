@@ -1,23 +1,23 @@
 
-variable "name" {
+variable "resource_group_name" {
   description = "resource group name"
 }
 
 # azure 
 
-variable "ARM_CLIENT_ID" {
+variable "arm_client_id" {
   description = "app id used by terraform"
 }
 
-variable "ARM_CLIENT_SECRET" {
+variable "arm_client_secret" {
   description = "app secret used by terraform"
 }
 
-variable "tenant" {
+variable "tenant_id" {
   description = "azure tenant id"
 }
 
-variable "subscription" {
+variable "subscription_id" {
   description = "azure subscription id"
 }
 
@@ -28,20 +28,9 @@ variable "agents_count" {
 
 variable "kubernetes_version" {
   description = "Version of Kubernetes to install"
-  default     = "1.13.7"
+  default     = "1.15.5"
 }
 
 variable "agents_size" {
   description = "The default virtual machine size for the Kubernetes agents"
-}
-
-variable "client_app_id" {
-  description = "app id used for AKS clients"
-}
-variable "server_app_id" {
-  description = "app id used by AKS for AAD integration"
-}
-
-variable "server_app_secret" {
-  description = "app secret used by AKS for AAD integration"
 }

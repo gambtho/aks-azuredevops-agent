@@ -1,0 +1,49 @@
+parameters:
+  env: ''
+  azure_sub: ''
+  name: ''
+
+steps:
+- task: AzureCLI@2
+  displayName: Build Docker Image
+  inputs:
+    azureSubscription: ${{parameters.azure_sub}} 
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+        RESOURCE_GROUP_NAME=${{parameters.name}}${{parameters.env}}
+        ARM_SUBSCRIPTION_ID=$(az account show --query id --out tsv)
+        az account set --subscription $ARM_SUBSCRIPTION_ID
+        az configure --defaults acr=${RESOURCE_GROUP_NAME}
+
+        echo "building docker image"
+
+        az acr build -t azpagent:latest ./azpdocker
+- task: AzureCLI@2
+  displayName: Build Helm Package
+  inputs:
+    azureSubscription: ${{parameters.azure_sub}} 
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+        RESOURCE_GROUP_NAME=${{parameters.name}}${{parameters.env}}
+        ARM_SUBSCRIPTION_ID=$(az account show --query id --out tsv)
+        az account set --subscription $ARM_SUBSCRIPTION_ID
+        az configure --defaults acr=${RESOURCE_GROUP_NAME}
+        az acr helm repo add
+
+        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
+        chmod 700 get_helm.sh 
+        ./get_helm.sh -v v3.0.0
+
+        helm init 
+        az acr helm repo add
+        helm package ./azpagent
+        
+        echo "pushing agent to helm"
+
+        az acr helm push --force ./azpagent-0.1.0.tgz
+
+        helm repo update
+        az acr helm list
+

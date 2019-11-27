@@ -1,0 +1,20 @@
+parameters:
+  env: ''
+  azure_sub: ''
+  name: ''
+
+steps:
+- task: DownloadPipelineArtifact@2
+  inputs:
+    artifact: plan-${{parameters.env}}
+    path: '$(System.DefaultWorkingDirectory)/terraform'
+- task: AzureCLI@2
+  displayName: Apply
+  inputs:
+    azureSubscription: ${{parameters.azure_sub}} 
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+        cd ./terraform
+        chmod +x .terraform/plugins/linux_amd64/terraform-provider-azurerm_v1.*
+        terraform apply ${{parameters.env}}.plan

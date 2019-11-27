@@ -1,0 +1,54 @@
+parameters:
+  env: ''
+  azure_sub: ''
+  name: ''
+  ADOTOKEN: ''
+  ADOPOOL: ''
+  ADOORG: ''
+
+steps:
+- task: AzureCLI@2
+  displayName: Deploy Agent to K8s
+  inputs:
+    azureSubscription: ${{parameters.azure_sub}} 
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+        RESOURCE_GROUP_NAME=${{parameters.name}}${{parameters.env}}
+        ARM_SUBSCRIPTION_ID=$(az account show --query id --out tsv)
+        az account set --subscription $ARM_SUBSCRIPTION_ID
+        az aks get-credentials --admin --name $RESOURCE_GROUP_NAME-aks --resource-group $RESOURCE_GROUP_NAME
+
+        az configure --defaults acr=${RESOURCE_GROUP_NAME}
+        
+        curl https://raw.githubusercontent.com/helm/helm/master/scripts/get > get_helm.sh
+        chmod 700 get_helm.sh
+        ./get_helm.sh -v v3.0.0
+
+        helm init 
+
+        az acr helm repo add
+        helm repo update
+
+        az acr helm list
+        helm repo list
+        helm fetch ${RESOURCE_GROUP_NAME}/azpagent
+
+        ADO_TOKEN=$(echo ${{parameters.ADOTOKEN}} | base64)
+        ADO_POOL=$(echo ${{parameters.ADOPOOL}} | base64)
+        ADO_URL=$(echo "https://dev.azure.com/${{parameters.ADOORG}}" | base64)
+
+        echo $ADO_TOKEN
+        echo $ADO_POOL
+        echo $ADO_URL
+
+        echo "deploying agent to k8s"
+
+        helm upgrade --install azpagentes ${RESOURCE_GROUP_NAME}/azpagent \
+            --set azp.url=${ADO_URL} \
+            --set azp.token=${ADO_TOKEN} \
+            --set azp.pool=${ADO_POOL} \
+            --set image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/azpagent 
+
+        # kubectl apply -f ../config/kured.yaml
+

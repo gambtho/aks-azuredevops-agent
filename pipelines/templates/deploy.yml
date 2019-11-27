@@ -34,14 +34,9 @@ steps:
         helm repo list
         helm fetch ${RESOURCE_GROUP_NAME}/azpagent
 
-        ADO_TOKEN=$(echo ${ADOTOKEN} | base64)
-        ADO_POOL=$(echo ${ADOPOOL} | base64)
+        ADO_TOKEN=$(echo "${ADOTOKEN}" | base64)
+        ADO_POOL=$(echo "${ADOPOOL}" | base64)
         ADO_URL=$(echo "https://dev.azure.com/${ADOORG}" | base64)
-
-        echo "Variables..."
-        echo ${ADO_TOKEN}
-        echo ${ADO_POOL}
-        echo ${ADO_URL}
 
         echo "deploying agent to k8s"
 

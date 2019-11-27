@@ -15,7 +15,6 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-        echo "newest apply part2"
         cd ./terraform
         chmod +x .terraform/plugins/linux_amd64/terraform-provider-azurerm_v1.*
         terraform apply ${{parameters.env}}.plan

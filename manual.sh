@@ -32,6 +32,6 @@ az keyvault secret set --vault-name $name$env --name ARM-CLIENT-SECRET --value $
 az keyvault secret set --vault-name $name$env --name ADO-POOL --value pool
 az keyvault secret set --vault-name $name$env --name ADO-TOKEN --value token
 az keyvault secret set --vault-name $name$env --name ADO-ORG --value token
-az keyvault secret set --vault-name $name$env --name location --value location
-az keyvault secret set --vault-name $name$env --name name --value name
-az keyvault secret set --vault-name $name$env --name env --value env
+az keyvault secret set --vault-name $name$env --name ADO-LOCATION --value location
+az keyvault secret set --vault-name $name$env --name ADO-NAME --value name
+az keyvault secret set --vault-name $name$env --name ADO-ENV --value env

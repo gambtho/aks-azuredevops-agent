@@ -1,4 +1,4 @@
-replicaCount: 8
+replicaCount: 1
 image:
   repository: gambtho/azure-pipeline-agent
   tag: latest

@@ -9,7 +9,6 @@ trigger:
 variables:
   - group: ado-kv
   - group: ado-config
-  - group: tapm
 
 stages: 
   - stage: build
@@ -28,9 +27,9 @@ stages:
       steps: 
       - template: templates/image.yml
         parameters:
-          env: $(ADOENV)
+          env: $(ADO-ENV)
           azure_sub: $(azure_sub)
-          name: $(ADONAME)
+          name: $(ADO-NAME)
   - stage: dev
     displayName: Dev  
     jobs:
@@ -41,9 +40,9 @@ stages:
       steps: 
       - template: templates/plan.yml
         parameters:
-          env: $(ADOENV)
+          env: $(ADO-ENV)
           azure_sub: $(azure_sub)
-          name: $(ADONAME)
+          name: $(ADO-NAME)
           ARMCLIENTID: $(ARM-CLIENT-ID)
           ARMCLIENTSECRET: $(ARM-CLIENT-SECRET)
     - deployment: cluster
@@ -58,9 +57,9 @@ stages:
             steps:
               - template: templates/apply.yml
                 parameters: 
-                  env: $(ADOENV)
+                  env: $(ADO-ENV)
                   azure_sub: $(azure_sub)
-                  name: $(ADONAME)
+                  name: $(ADO-NAME)
                   ARMCLIENTID: $(ARM-CLIENT-ID)
                   ARMCLIENTSECRET: $(ARM-CLIENT-SECRET)
     - deployment: agent
@@ -77,7 +76,7 @@ stages:
                 parameters: 
                   env: $(ADOENV)
                   azure_sub: $(azure_sub)
-                  name: $(ADONAME)
-                  ADOTOKEN: $(NEW-ADO-TOKEN)
-                  ADOPOOL: $(NEW-ADO-POOL)
-                  ADOORG: $(NEW-ADO-ORG)
+                  name: $(ADO-NAME)
+                  ADOTOKEN: $(ADO-TOKEN)
+                  ADOPOOL: $(ADO-POOL)
+                  ADOORG: $(ADO-ORG)

@@ -17,7 +17,7 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
     
    This command will ask for your Azure subscription id, as well as the name (arbitrary string of your choice), env (arbitrary string of your choice), and location (valid Azure region) for your AKS cluster.
 ---
-4. Create another variable group named "ado-kv" and associate it with the key vault you just created:
+4. Create a variable group named "ado-kv" and associate it with the key vault you just created:
    - Toggle **Link secrets from an Azure key vault as variables**
    - Select your subscription and the key vault you created in the previous step
    - **Authorize** it for use in the pipelines

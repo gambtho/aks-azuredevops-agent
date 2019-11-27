@@ -35,7 +35,7 @@ steps:
         helm fetch ${RESOURCE_GROUP_NAME}/azpagent
 
         ADO_TOKEN=$(echo ${{parameters.ADOTOKEN}} | base64)
-        ADO_POOL=$(echo ${{paramaters.ADOPOOL}} | base64)
+        ADO_POOL=$(echo ${{parameters.ADOPOOL}} | base64)
         ADO_URL=$(echo "https://dev.azure.com/${{parameters.ADOORG}}" | base64)
 
         echo $ADO_TOKEN

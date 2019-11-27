@@ -44,13 +44,13 @@ steps:
 
         echo "deploying agent to k8s"
 
-        echo "helm install azpagentes ${RESOURCE_GROUP_NAME}/azpagent \
+        echo "helm upgrade --install azpagentes ${RESOURCE_GROUP_NAME}/azpagent \
             --set azp.url=${ADO_URL} \
             --set azp.token=${ADO_TOKEN} \
             --set azp.pool=${ADO_POOL} \
             --set image.repository=${RESOURCE_GROUP_NAME}.azurecr.io/azpagent"
 
-        helm install azpagentes ${RESOURCE_GROUP_NAME}/azpagent \
+        helm upgrade --install azpagentes ${RESOURCE_GROUP_NAME}/azpagent \
             --set azp.url=${ADO_URL} \
             --set azp.token=${ADO_TOKEN} \
             --set azp.pool=${ADO_POOL} \

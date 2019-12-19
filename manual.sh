@@ -29,9 +29,9 @@ az keyvault create --name $name$env --resource-group $name$env --location $locat
 az acr create -n $name$dev -g $name$dev --sku Standard
 az keyvault secret set --vault-name $name$env --name ARM-CLIENT-ID --value $appId
 az keyvault secret set --vault-name $name$env --name ARM-CLIENT-SECRET --value $password 
-az keyvault secret set --vault-name $name$env --name ADO-POOL --value pool
-az keyvault secret set --vault-name $name$env --name ADO-TOKEN --value token
-az keyvault secret set --vault-name $name$env --name ADO-ORG --value token
-az keyvault secret set --vault-name $name$env --name ADO-LOCATION --value location
-az keyvault secret set --vault-name $name$env --name ADO-NAME --value name
-az keyvault secret set --vault-name $name$env --name ADO-ENV --value env
+az keyvault secret set --vault-name $name$env --name ADO-POOL --value $pool
+az keyvault secret set --vault-name $name$env --name ADO-TOKEN --value $token
+az keyvault secret set --vault-name $name$env --name ADO-ORG --value $org
+az keyvault secret set --vault-name $name$env --name ADO-LOCATION --value $location
+az keyvault secret set --vault-name $name$env --name ADO-NAME --value $name
+az keyvault secret set --vault-name $name$env --name ADO-ENV --value $env

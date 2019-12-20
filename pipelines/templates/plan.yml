@@ -77,7 +77,11 @@ steps:
     scriptLocation: inlineScript
     inlineScript: |
         cd ./terraform
-        terraform plan -var="arm_client_id=${{parameters.ARMCLIENTID}}" -var="arm_client_secret=${{parameters.ARMCLIENTSECRET}}" --out=${{parameters.env}}.plan
+        terraform plan -var="arm_client_id=${{parameters.ARMCLIENTID}}" \
+         -var="arm_client_secret=${{parameters.ARMCLIENTSECRET}}" \
+         -var="agents_count=1" \
+         -var="agents_size=Standard_D2_v2" \
+         --out=${{parameters.env}}.plan 
 - task: PublishPipelineArtifact@1
   inputs:
     path: '$(System.DefaultWorkingDirectory)/terraform'

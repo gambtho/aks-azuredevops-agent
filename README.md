@@ -23,10 +23,8 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
    - **Authorize** it for use in the pipelines
    - Add all the variables aviable in your key vault
    If authorize doesn't work, use:
-    $ErrorActionPreference="Stop"
-    $spn=(Get-AzADServicePrincipal -ServicePrincipalName yourserviceprincipalIdhere)
-    $spnObjectId=$spn.Id
-    Set-AzKeyVaultAccessPolicy -VaultName aksagentstest -ObjectId $spnObjectId -PermissionsToSecrets get,list
+
+    az keyvault set-policy --name VAULTNAME --spn SPNId --secret-permissions get list 
 ---
 5. Create another variable group named "ado-config":
     - Add a variable named azure_sub

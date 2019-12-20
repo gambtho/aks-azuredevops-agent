@@ -21,11 +21,6 @@ module "kubernetes" {
   service_principal_client_secret = "${var.arm_client_secret}"
 }
 
-module "acr" {
-  source = "./modules/acr"
-  name   = "${data.azurerm_resource_group.main.name}"
-}
-
 terraform {
   backend "azurerm" {}
 }

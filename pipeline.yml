@@ -19,13 +19,13 @@ stages:
       pool:
         vmImage: 'ubuntu-16.04'
       steps: 
-      - template: templates/setup.yml
+      - template: pipelines/templates/setup.yml
     - job: image 
       displayName: Build docker image and helm package
       pool:
         vmImage: 'ubuntu-16.04'
       steps: 
-      - template: templates/image.yml
+      - template: pipelines/templates/image.yml
         parameters:
           env: $(ADO-ENV)
           azure_sub: $(azure_sub)
@@ -38,7 +38,7 @@ stages:
       pool:
         vmImage: 'ubuntu-16.04'
       steps: 
-      - template: templates/plan.yml
+      - template: pipelines/templates/plan.yml
         parameters:
           env: $(ADO-ENV)
           azure_sub: $(azure_sub)
@@ -55,7 +55,7 @@ stages:
         runOnce:
           deploy:
             steps:
-              - template: templates/apply.yml
+              - template: pipelines/templates/apply.yml
                 parameters: 
                   env: $(ADO-ENV)
                   azure_sub: $(azure_sub)
@@ -72,9 +72,9 @@ stages:
         runOnce:
           deploy:
             steps:
-              - template: templates/deploy.yml
+              - template: pipelines/templates/deploy.yml
                 parameters: 
-                  env: $(ADOENV)
+                  env: $(ADO-ENV)
                   azure_sub: $(azure_sub)
                   name: $(ADO-NAME)
                   ADOTOKEN: $(ADO-TOKEN)

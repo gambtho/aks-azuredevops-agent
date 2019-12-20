@@ -26,7 +26,7 @@ echo ""
 
 az group create --name $name$env --location $location
 az keyvault create --name $name$env --resource-group $name$env --location $location 
-az acr create -n $name$dev -g $name$dev --sku Standard
+az acr create -n $name$env -g $name$env --sku Standard
 az keyvault secret set --vault-name $name$env --name ARM-CLIENT-ID --value $appId
 az keyvault secret set --vault-name $name$env --name ARM-CLIENT-SECRET --value $password 
 az keyvault secret set --vault-name $name$env --name ADO-POOL --value $pool

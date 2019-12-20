@@ -13,6 +13,12 @@ steps:
     inlineScript: |
         RESOURCE_GROUP_NAME=${{parameters.name}}${{parameters.env}}
         ARM_SUBSCRIPTION_ID=$(az account show --query id --out tsv)
+        if (az acr repository list --name $RESOURCE_GROUP_NAME) then
+          echo "repository found."
+        else
+          echo "Creating ACR repo"
+          az acr create --name $RESOURCE_GROUP_NAME --sku basic -g $RESOURCE_GROUP_NAME
+        fi
         az account set --subscription $ARM_SUBSCRIPTION_ID
         az configure --defaults acr=${RESOURCE_GROUP_NAME}
 

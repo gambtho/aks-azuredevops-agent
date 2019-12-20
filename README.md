@@ -15,13 +15,18 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
     - Create service principal for use by terraform and AKS
     - Save service principal and other provided variables in keyvault
     
-   This command will ask for your Azure subscription id, as well as the name (arbitrary string of your choice), env (arbitrary string of your choice), and location (valid Azure region) for your AKS cluster.
+   This command will ask for your Azure subscription id, as well as the name (arbitrary string of your choice), env (arbitrary string of your choice), location (valid Azure region) for your AKS cluster, the name of your azure devops organization, name of the pool and Azure token.
 ---
 4. Create a variable group named "ado-kv" and associate it with the key vault you just created:
    - Toggle **Link secrets from an Azure key vault as variables**
    - Select your subscription and the key vault you created in the previous step
    - **Authorize** it for use in the pipelines
    - Add all the variables aviable in your key vault
+   If authorize doesn't work, use:
+    $ErrorActionPreference="Stop"
+    $spn=(Get-AzADServicePrincipal -ServicePrincipalName yourserviceprincipalIdhere)
+    $spnObjectId=$spn.Id
+    Set-AzKeyVaultAccessPolicy -VaultName aksagentstest -ObjectId $spnObjectId -PermissionsToSecrets get,list
 ---
 5. Create another variable group named "ado-config":
     - Add a variable named azure_sub

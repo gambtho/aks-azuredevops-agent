@@ -14,6 +14,7 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
 3. Run the manual setup script **./manual.sh** from [Azure CLI](https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart) or [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10) on your wokstation. 
 
 Syntax: **./manual.sh** [-s applicationId] [-p password]
+
 This script does the following:
     - Create service principal for use by terraform and AKS (optionally, you can use -s for the Application Id and -p for the spn password)
     - Save service principal and other provided variables in keyvault

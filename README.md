@@ -11,9 +11,14 @@ This repo provides instructions and configuration to setup Self Hosted Agents fo
 ---
 2. Create an Azure Resource Manager **Service connection** in Azure DevOps
 ---
-3. Run the manual setup script **./manual.sh** from [Azure CLI](https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart) or [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10) on your wokstation, this script does the following:
-    - Create service principal for use by terraform and AKS
+3. Run the manual setup script **./manual.sh** from [Azure CLI](https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart) or [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10) on your wokstation. 
+
+Syntax: **./manual.sh** [-s applicationId] [-p password]
+
+This script does the following:
+    - Create service principal for use by terraform and AKS (optionally, you can use -s for the Application Id and -p for the spn password)
     - Save service principal and other provided variables in keyvault
+    - Authorize the selected SPN in keyvault
     
    This command will ask for your Azure subscription id, as well as the name (arbitrary string of your choice), env (arbitrary string of your choice), location (valid Azure region) for your AKS cluster, the name of your azure devops organization, name of the pool and Azure token.
 ---

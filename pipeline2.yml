@@ -1,0 +1,82 @@
+name: Agent-$(Date:yyyyMMdd).$(Rev:.r)
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+    - dev
+
+variables:
+  - group: ado-kv
+  - group: ado-config
+
+stages: 
+  - stage: build
+    displayName: Build
+    jobs: 
+    - job: validate 
+      displayName: Terraform Validate and Publish
+      pool:
+        vmImage: 'ubuntu-16.04'
+      steps: 
+      - template: pipelines/templates/setup.yml
+    - job: image 
+      displayName: Build docker image and helm package
+      pool:
+        vmImage: 'ubuntu-16.04'
+      steps: 
+      - template: pipelines/templates/image.yml
+        parameters:
+          env: $(ADO-ENV)
+          azure_sub: $(azure_sub)
+          name: $(ADO-NAME)
+  - stage: dev
+    displayName: Dev  
+    jobs:
+    - job: plan
+      displayName: Plan Terraform for K8s 
+      pool:
+        vmImage: 'ubuntu-16.04'
+      steps: 
+      - template: pipelines/templates/plan.yml
+        parameters:
+          env: $(ADO-ENV)
+          azure_sub: $(azure_sub)
+          name: $(ADO-NAME)
+          ARMCLIENTID: $(ARM-CLIENT-ID)
+          ARMCLIENTSECRET: $(ARM-CLIENT-SECRET)
+    - deployment: cluster
+      displayName: Apply Terraform for K8s 
+      environment: dev
+      pool:
+        vmImage: 'ubuntu-16.04'
+      dependsOn: plan
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - template: pipelines/templates/apply.yml
+                parameters: 
+                  env: $(ADO-ENV)
+                  azure_sub: $(azure_sub)
+                  name: $(ADO-NAME)
+                  ARMCLIENTID: $(ARM-CLIENT-ID)
+                  ARMCLIENTSECRET: $(ARM-CLIENT-SECRET)
+    - deployment: agent
+      displayName: Deploy Agent via Helm
+      environment: dev
+      pool:
+        vmImage: 'ubuntu-16.04'
+      dependsOn: cluster
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - template: pipelines/templates/deploy.yml
+                parameters: 
+                  env: $(ADO-ENV)
+                  azure_sub: $(azure_sub)
+                  name: $(ADO-NAME)
+                  ADOTOKEN: $(ADO-TOKEN)
+                  ADOPOOL: $(ADO-POOL)
+                  ADOORG: $(ADO-ORG)
